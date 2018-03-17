@@ -1,0 +1,9 @@
+{"hello":"world","saySth":"OK","level":"error","message":"here is error","timestamp":"2018-03-16T05:23:47.456Z"}
+{"hello":"world","saySth":"OK","level":"info","message":"here is info","timestamp":"2018-03-16T05:23:47.457Z"}
+{"hello":"world","saySth":"OK","level":"debug","message":"here is debug","timestamp":"2018-03-16T06:22:48.363Z"}
+{"hello":"world","saySth":"OK","level":"error","message":"here is error","timestamp":"2018-03-16T06:22:48.365Z"}
+{"hello":"world","saySth":"OK","level":"info","message":"here is info","timestamp":"2018-03-16T06:22:48.365Z"}
+{"hello":"world","saySth":"OK","level":"debug","message":"here is debug","timestamp":"2018-03-16T06:22:48.365Z"}
+{"hello":"world","saySth":"OK","level":"debug","message":"here is debug","timestamp":"2018-03-16T06:22:48.365Z"}
+{"hello":"world","saySth":"OK","level":"debug","message":"here is debug","timestamp":"2018-03-16T06:22:48.365Z"}
+{"hello":"world","saySth":"OK","level":"debug","message":"here is debug","timestamp":"2018-03-16T06:22:48.365Z"}
