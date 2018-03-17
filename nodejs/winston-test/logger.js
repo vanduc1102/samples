@@ -1,25 +1,34 @@
 'use strict';
 const winston = require('winston');
-const logger = winston.createLogger({
-	level: 'info',
-	format: winston.format.json(),
-	transports: [
-	  //
-	  // - Write to all logs with level `info` and below to `combined.log` 
-	  // - Write all logs error (and below) to `error.log`.
-	  //
-	  new winston.transports.File({ filename: 'error.log', level: 'error' }),
-	  new winston.transports.File({ filename: 'combined.log' })
-	]
+const DailyRotateFile = require('winston-daily-rotate-file');
+const path = require('path'),
+fs = require('fs'),
+logLevel =  process.env.LOG_LEVEL || process.env.NODE_ENV !== 'production' ? 'debug' : 'info';
+
+const logFolder = path.resolve(path.dirname(require.main.filename), 'log');
+
+if(!fs.existsSync(logFolder)){
+	fs.mkdirSync(logFolder);
+}
+
+const transportDailyRotateFile = new (winston.transports.DailyRotateFile)({
+	dirname: logFolder,
+    filename: './log',
+    datePattern: 'yyyy-MM-dd.',
+	prepend: true,
+	maxsize: 1024,
+    level: logLevel
   });
-  
-  //
-  // If we're not in production then log to the `console` with the format:
-  // `${info.level}: ${info.message} JSON.stringify({ ...rest }) `
-  // 
-  if (process.env.NODE_ENV !== 'production') {
-	logger.add(new winston.transports.Console({
-	  format: winston.format.simple()
-	}));
-  }
-  
+
+const logger = new (winston.Logger)({
+	level: logLevel,
+	transports: [
+		transportDailyRotateFile
+	]
+});
+
+if (process.env.NODE_ENV !== 'production') {
+	logger.add(winston.transports.Console);
+}
+
+module.exports = logger;

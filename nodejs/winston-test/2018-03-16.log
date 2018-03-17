@@ -1,0 +1,14 @@
+{"hello":"world","saySth":"OK","level":"debug","message":"here is debug","timestamp":"2018-03-16T07:30:00.273Z"}
+{"hello":"world","saySth":"OK","level":"error","message":"here is error","timestamp":"2018-03-16T07:30:00.275Z"}
+{"hello":"world","saySth":"OK","level":"info","message":"here is info","timestamp":"2018-03-16T07:30:00.275Z"}
+{"hello":"world","saySth":"OK","level":"warn","message":"here is warn","timestamp":"2018-03-16T07:30:00.276Z"}
+{"hello":"world","saySth":"OK","level":"debug","message":"here is debug","timestamp":"2018-03-16T07:30:00.276Z"}
+{"hello":"world","saySth":"OK","level":"debug","message":"here is debug","timestamp":"2018-03-16T07:30:00.276Z"}
+{"hello":"world","saySth":"OK","level":"debug","message":"here is debug","timestamp":"2018-03-16T07:30:00.276Z"}
+{"hello":"world","saySth":"OK","level":"debug","message":"here is debug","timestamp":"2018-03-16T07:35:35.773Z"}
+{"hello":"world","saySth":"OK","level":"error","message":"here is error","timestamp":"2018-03-16T07:35:35.776Z"}
+{"hello":"world","saySth":"OK","level":"info","message":"here is info","timestamp":"2018-03-16T07:35:35.776Z"}
+{"hello":"world","saySth":"OK","level":"warn","message":"here is warn","timestamp":"2018-03-16T07:35:35.776Z"}
+{"hello":"world","saySth":"OK","level":"debug","message":"here is debug","timestamp":"2018-03-16T07:35:35.776Z"}
+{"hello":"world","saySth":"OK","level":"debug","message":"here is debug","timestamp":"2018-03-16T07:35:35.776Z"}
+{"hello":"world","saySth":"OK","level":"debug","message":"here is debug","timestamp":"2018-03-16T07:35:35.777Z"}
