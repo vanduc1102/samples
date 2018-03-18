@@ -2,8 +2,10 @@
 
 <ul class="heroes">
   <li *ngFor="let hero of heroes" (click)="onSelect(hero)" [class.selected]="hero === selectedHero">
-    <span class="badge"> {{ hero.id }} </span>
-    <span>{{ hero.name }} </span>
+    <a routerLink="/detail/{{hero.id}}">
+      <span class="badge"> {{ hero.id }} </span>
+      <span>{{ hero.name }} </span>
+    </a>
   </li>
 </ul>
 <button (click)="onClear()">Clear</button>
