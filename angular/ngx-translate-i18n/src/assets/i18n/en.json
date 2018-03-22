@@ -1,0 +1,9 @@
+{
+  "app-component":{
+    "welcome":"Hey fcker",
+    "ref-link":"Here are some links to help you start:"
+  },
+  "lang-selector":{
+    "title":"Language"
+  }
+}
