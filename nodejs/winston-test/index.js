@@ -1,7 +1,7 @@
 'use strict';
 
 
-const logger = require('./logger');
+const logger = require('./logger')(module);
 
 console.log('process.env.NODE_ENV : ',process.env.NODE_ENV);
 
@@ -10,6 +10,7 @@ const dumpObj = {
 	saySth:"OK"
 }
 
+// logger.add('index.js');
 logger.debug('here is debug', dumpObj);
 logger.error('here is error', dumpObj);
 logger.info('here is info',dumpObj);

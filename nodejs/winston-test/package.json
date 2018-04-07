@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bunyan": "^1.8.12",
     "winston": "^2.4.1",
     "winston-daily-rotate-file": "^1.7.2"
   }
