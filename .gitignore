@@ -122,3 +122,4 @@ dist
 node_modules/
 .log
 log/
+package-lock.json
