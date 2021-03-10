@@ -1,0 +1,2 @@
+p, user, /api/public, GET
+p, admin, /api/*, *
