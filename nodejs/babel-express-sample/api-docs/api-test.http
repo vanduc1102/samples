@@ -1,0 +1,13 @@
+
+GET http://localhost:3000/api/v1/users
+content-type: application/json
+
+###
+
+POST http://localhost:3000/api/v1/users/authenticate
+content-type: application/json
+
+{
+    "username": "sample2",
+    "password": "pa$$W0rd"
+}
