@@ -7,6 +7,6 @@ const sequelize = new Sequelize({
         'database.sqlite')
 });
 
-sequelize.sync({ force: true });
+sequelize.sync({ alter: true });
 
 export default sequelize;

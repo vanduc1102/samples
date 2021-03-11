@@ -1,13 +1,33 @@
 
-GET http://localhost:3000/api/v1/users
-content-type: application/json
-
-###
-
+# @name authenticate
 POST http://localhost:3000/api/v1/users/authenticate
 content-type: application/json
 
 {
-    "username": "sample2",
+    "username": "sample1",
     "password": "pa$$W0rd"
+}
+
+###
+@authToken = {{authenticate.response.body.data.accessToken}}
+@refreshToken = {{authenticate.response.body.data.refreshToken}}
+# @name getUsers
+GET http://localhost:3000/api/v1/users
+content-type: application/json
+Authorization: Bearer {{authToken}}
+
+###
+# @name getProfile
+
+GET http://localhost:3000/api/v1/users/profile
+content-type: application/json
+Authorization: Bearer {{authToken}}
+
+###
+# @name refreshTokenApi
+POST http://localhost:3000/api/v1/users/refresh-token
+content-type: application/json
+
+{
+    "refreshToken": "{{refreshToken}}"
 }
