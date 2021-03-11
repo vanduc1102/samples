@@ -4,23 +4,32 @@
   "private": true,
   "scripts": {
     "start": "npm run build && node dist/bin/www",
+    "lint": "eslint app.js src",
     "build": "rimraf dist/ && babel ./ --out-dir dist/ --ignore ./node_modules,./babelrc,./package.json,./npm-debug.log --copy-files",
     "dev": "nodemon --exec babel-node bin/www --watch app.js src views"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
-    "morgan": "~1.9.1"
+    "jsonwebtoken": "^8.5.1",
+    "morgan": "~1.9.1",
+    "ramda": "^0.27.1",
+    "sequelize": "^6.5.0",
+    "sqlite3": "^5.0.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.13.10",
-    "@babel/node": "^7.13.10",
     "@babel/core": "^7.13.10",
+    "@babel/eslint-parser": "^7.13.10",
+    "@babel/node": "^7.13.10",
     "@babel/preset-env": "^7.13.10",
+    "eslint": "^7.21.0",
     "nodemon": "^2.0.7",
+    "prettier": "2.2.1",
     "rimraf": "^3.0.2"
   },
   "nodemonConfig": {
