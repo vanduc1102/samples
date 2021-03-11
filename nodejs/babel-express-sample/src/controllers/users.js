@@ -8,7 +8,17 @@ async function findAll() {
     return userServices.findAll()
 }
 
+async function getProfile(userId){
+    return userServices.getProfile(userId)
+}
+
+async function refreshToken(token){
+    return userServices.refreshToken(token);
+}
+
 export default {
     authenticate,
-    findAll
+    findAll,
+    getProfile,
+    refreshToken
 }
