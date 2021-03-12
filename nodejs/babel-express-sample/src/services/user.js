@@ -4,7 +4,6 @@ import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import ramda from 'ramda';
 import jwt from 'jsonwebtoken';
-import { promisify } from 'util'
 import config from '../config/secret.json'
 
 const ONE_YEAR = 1000 * 60 * 60 * 24 * 365;
