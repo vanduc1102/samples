@@ -3,6 +3,7 @@ var router = express.Router();
 const axios = require('axios');
 const querystring = require('querystring');
 
+const ONE_HOUR = 60 * 60 * 1000;
 
 router.get('/start', function (req, res, next) {
   console.log("start: ", req.query);
@@ -10,7 +11,10 @@ router.get('/start', function (req, res, next) {
   const callbackUrl = 'http://localhost:3000/oauth/callback'
   const oauthUrl = 'https://public-api.wordpress.com/oauth2/authorize?client_id=75397&response_type=code&scope=auth&redirect_uri=' + callbackUrl;
 
-  res.cookie('redirect_uri', redirect_uri, { secure: true });
+  res.cookie('redirect_uri', redirect_uri, {
+    secure: true,
+    expires: new Date(Date.now() + ONE_HOUR)
+  });
   res.redirect(oauthUrl);
 });
 
@@ -31,14 +35,14 @@ router.get('/callback', async function (req, res, next) {
 });
 
 async function getAccessToken(tokenCode) {
-  const data = new URLSearchParams()
-  data.append('client_id', process.env.CLIENT_ID)
-  data.append('redirect_uri', process.env.REDIRECT_URI)
-  data.append('client_secret', process.env.CLIENT_SECRET)
-  data.append('code', tokenCode)
-  data.append('grant_type', 'authorization_code')
+  const formData = new URLSearchParams()
+  formData.append('client_id', process.env.CLIENT_ID)
+  formData.append('redirect_uri', process.env.REDIRECT_URI)
+  formData.append('client_secret', process.env.CLIENT_SECRET)
+  formData.append('code', tokenCode)
+  formData.append('grant_type', 'authorization_code')
 
-  return axios.post('https://public-api.wordpress.com/oauth2/token', data, {
+  return axios.post('https://public-api.wordpress.com/oauth2/token', formData, {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     }
