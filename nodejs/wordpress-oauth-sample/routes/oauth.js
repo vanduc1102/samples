@@ -9,7 +9,7 @@ router.get('/start', function (req, res, next) {
   console.log("start: ", req.query);
   const redirect_uri = req.query.redirect_uri;
   const callbackUrl = 'http://localhost:3000/oauth/callback'
-  const oauthUrl = 'https://public-api.wordpress.com/oauth2/authorize?client_id=75397&response_type=code&scope=auth&redirect_uri=' + callbackUrl;
+  const oauthUrl = 'https://public-api.wordpress.com/oauth2/authorize?client_id='+process.env.CLIENT_ID+'&response_type=code&scope=auth&redirect_uri=' + callbackUrl;
 
   res.cookie('redirect_uri', redirect_uri, {
     secure: true,
