@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const StyledApp = styled.div`
   font-family: sans-serif;
   min-width: 300px;
-  max-width: 600px;
+  max-width: 1024px;
   margin: 50px auto;
 
   .gutter-left {
@@ -42,8 +42,6 @@ export const StyledApp = styled.div`
   }
 
   h2 {
-    text-align: center;
-    font-size: 20px;
     margin: 40px 0 10px 0;
   }
 

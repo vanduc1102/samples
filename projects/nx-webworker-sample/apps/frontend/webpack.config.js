@@ -7,6 +7,7 @@ module.exports = (config, context) => {
     ...config,
     node: {
       Buffer: true,
+      module: 'empty',
     },
     plugins: [new WorkerPlugin(), ...config.plugins],
   };
