@@ -6,8 +6,8 @@ import {
   TextField,
 } from '@fluentui/react';
 import { useFormik } from 'formik';
-import React from 'react';
 import * as Yup from 'yup';
+import { userService } from '../../services';
 
 const LoginSchema = Yup.object().shape({
   username: Yup.string().required('Username is required'),
@@ -20,8 +20,12 @@ interface Login {
 }
 
 const LoginPage: React.FC = () => {
-  const handleSubmit = async (values: Login) => {
-    alert(JSON.stringify(values));
+  const handleSubmit = async (userCredential: Login) => {
+    try {
+      await userService.login(userCredential.username, userCredential.password);
+    } catch (error) {
+      alert(error);
+    }
   };
 
   const formik = useFormik<Login>({
@@ -34,16 +38,25 @@ const LoginPage: React.FC = () => {
   });
 
   return (
-    <div>
+    <div
+      style={{
+        margin: 'auto',
+        maxWidth: '480px',
+      }}
+    >
       <MessageBar
         messageBarType={MessageBarType.info}
         isMultiline={true}
         dismissButtonAriaLabel="Close"
       >
-        <Text as="div">User: test</Text> <br />
-        <Text as="div">Password: test</Text>
+        <Text as="p" block={true}>
+          User: test
+        </Text>
+        <Text as="p" block={true}>
+          Password: test
+        </Text>
       </MessageBar>
-      <Text variant="large" as="h2">
+      <Text variant="large" as="h2" block={true}>
         Login
       </Text>
       <form onSubmit={formik.handleSubmit}>
@@ -65,6 +78,7 @@ const LoginPage: React.FC = () => {
           errorMessage={formik.errors.password}
           value={formik.values.password}
         />
+        <br />
         <PrimaryButton
           text="Login"
           type="submit"
