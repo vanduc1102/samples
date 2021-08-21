@@ -1,12 +1,15 @@
-import { Link, Text } from '@fluentui/react';
 import React from 'react';
+import { Link, Text } from '@fluentui/react';
+
+import { User } from '../../types/user';
 
 const HomePage: React.FC = () => {
-  const user: any = {
-    id: '1',
+  const user: User = {
+    id: 1,
     firstName: 'fTest',
     lastName: 'lTest',
   };
+
   const users = { loading: false, error: false, items: [{ ...user }] };
 
   return (
@@ -17,7 +20,7 @@ const HomePage: React.FC = () => {
       }}
     >
       <Text as="h1" block={true}>
-        Hi {user.firstName!}
+        Hi {user.firstName}
       </Text>
       <Text as="div" block={true}>
         You're logged in with React & JWT!!

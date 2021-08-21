@@ -1,4 +1,6 @@
-const users = [
+import { User } from '../types/user';
+
+const users: User[] = [
   {
     id: 1,
     username: 'test',
@@ -20,7 +22,7 @@ export function configureFakeBackend() {
           const params = JSON.parse(opts.body);
 
           // find if any user matches login credentials
-          const filteredUsers = users.filter((user) => {
+          const filteredUsers = users.filter((user: User) => {
             return (
               user.username === params.username &&
               user.password === params.password
