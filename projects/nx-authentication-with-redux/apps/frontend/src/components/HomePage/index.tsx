@@ -1,16 +1,24 @@
 import React from 'react';
-import { Link, Text } from '@fluentui/react';
+import { PrimaryButton, Text } from '@fluentui/react';
 
 import { User } from '../../types/user';
+import { useHistory } from 'react-router-dom';
+const user: User = {
+  id: 1,
+  firstName: 'fTest',
+  lastName: 'lTest',
+};
 
 const HomePage: React.FC = () => {
-  const user: User = {
-    id: 1,
-    firstName: 'fTest',
-    lastName: 'lTest',
-  };
+  const { push } = useHistory();
 
   const users = { loading: false, error: false, items: [{ ...user }] };
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    push({
+      pathname: '/login',
+    });
+  };
 
   return (
     <div
@@ -32,13 +40,16 @@ const HomePage: React.FC = () => {
       {users.error && <span className="text-danger">ERROR: {users.error}</span>}
       {users.items && (
         <ul>
-          {users.items.map((user, index) => (
-            <li key={user.id}>{user.firstName + ' ' + user.lastName}</li>
+          {users.items.map((user) => (
+            <li key={user.id}>
+              <Text block={true}>First Name: {user.firstName}</Text>
+              <Text block={true}>Last Name: {user.lastName}</Text>
+            </li>
           ))}
         </ul>
       )}
       <Text as="p" block={true}>
-        <Link to="/login">Logout</Link>
+        <PrimaryButton onClick={handleLogout}>Logout</PrimaryButton>
       </Text>
     </div>
   );

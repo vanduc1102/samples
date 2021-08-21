@@ -1,28 +1,29 @@
-import {
-  MessageBar,
-  MessageBarType,
-  PrimaryButton,
-  Text,
-  TextField,
-} from '@fluentui/react';
+import { PrimaryButton, Text, TextField } from '@fluentui/react';
 import { useFormik } from 'formik';
+import { useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
 import { userService } from '../../services';
+import { Login } from './types';
 
 const LoginSchema = Yup.object().shape({
   username: Yup.string().required('Username is required'),
   password: Yup.string().required('Password is required'),
 });
 
-interface Login {
-  username: string;
-  password: string;
-}
+export * from './LoginAlert';
 
-const LoginPage: React.FC = () => {
+const LoginPage = () => {
+  const { push } = useHistory();
   const handleSubmit = async (userCredential: Login) => {
     try {
-      await userService.login(userCredential.username, userCredential.password);
+      const response = await userService.login(
+        userCredential.username,
+        userCredential.password
+      );
+      localStorage.setItem('user', response);
+      push({
+        pathname: '/',
+      });
     } catch (error) {
       alert(error);
     }
@@ -44,18 +45,6 @@ const LoginPage: React.FC = () => {
         maxWidth: '480px',
       }}
     >
-      <MessageBar
-        messageBarType={MessageBarType.info}
-        isMultiline={true}
-        dismissButtonAriaLabel="Close"
-      >
-        <Text as="p" block={true}>
-          User: test
-        </Text>
-        <Text as="p" block={true}>
-          Password: test
-        </Text>
-      </MessageBar>
       <Text variant="large" as="h2" block={true}>
         Login
       </Text>
