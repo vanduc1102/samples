@@ -39,10 +39,12 @@ export function configureFakeBackend() {
               lastName: user.lastName,
               token: 'fake-jwt-token',
             };
-            resolve({
-              ok: true,
-              text: () => Promise.resolve(JSON.stringify(responseJson)),
-            } as any);
+            setTimeout(() => {
+              resolve({
+                ok: true,
+                text: () => Promise.resolve(JSON.stringify(responseJson)),
+              } as any);
+            }, 3000);
           } else {
             // else return error
             reject('Username or password is incorrect');

@@ -1,8 +1,11 @@
 import React from 'react';
-import { PrimaryButton, Text } from '@fluentui/react';
+import { FontSizes, PrimaryButton, Text } from '@fluentui/react';
 
 import { User } from '../../types/user';
 import { useHistory } from 'react-router-dom';
+import Counter from '../Counter';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../state/account/actions';
 const user: User = {
   id: 1,
   firstName: 'fTest',
@@ -10,14 +13,12 @@ const user: User = {
 };
 
 const HomePage: React.FC = () => {
-  const { push } = useHistory();
+  const dispatch = useDispatch();
 
   const users = { loading: false, error: false, items: [{ ...user }] };
+
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    push({
-      pathname: '/login',
-    });
+    dispatch(logout());
   };
 
   return (
@@ -27,12 +28,10 @@ const HomePage: React.FC = () => {
         margin: 'auto',
       }}
     >
-      <Text as="h1" block={true}>
-        Hi {user.firstName}
-      </Text>
-      <Text as="div" block={true}>
+      <div style={{ fontSize: FontSizes.size32 }}>Hi {user.firstName}</div>
+      <div style={{ fontSize: FontSizes.size24 }}>
         You're logged in with React & JWT!!
-      </Text>
+      </div>
       <Text as="h3" block={true}>
         Users from secure api end point:
       </Text>

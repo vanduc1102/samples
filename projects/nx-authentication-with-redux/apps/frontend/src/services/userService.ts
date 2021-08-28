@@ -27,8 +27,12 @@ function login(username: string, password: string) {
 }
 
 function logout() {
-  // remove user from local storage to log user out
-  localStorage.removeItem('user');
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      localStorage.removeItem('user');
+      resolve('ok');
+    }, 3000);
+  });
 }
 
 function getAll() {

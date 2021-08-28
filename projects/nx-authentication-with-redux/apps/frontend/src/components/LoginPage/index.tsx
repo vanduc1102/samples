@@ -1,8 +1,12 @@
 import { PrimaryButton, Text, TextField } from '@fluentui/react';
 import { useFormik } from 'formik';
-import { useHistory } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useLocation } from 'react-router-dom';
 import * as Yup from 'yup';
 import { userService } from '../../services';
+import { RootState } from '../../state';
+import { login } from '../../state/account/actions';
 import { Login } from './types';
 
 const LoginSchema = Yup.object().shape({
@@ -13,21 +17,26 @@ const LoginSchema = Yup.object().shape({
 export * from './LoginAlert';
 
 const LoginPage = () => {
+  const account = useSelector((state: RootState) => state.account);
   const { push } = useHistory();
+  const dispatch = useDispatch();
+
   const handleSubmit = async (userCredential: Login) => {
     try {
-      const response = await userService.login(
-        userCredential.username,
-        userCredential.password
-      );
-      localStorage.setItem('user', response);
-      push({
-        pathname: '/',
-      });
+      dispatch(login(userCredential));
     } catch (error) {
       alert(error);
     }
   };
+
+  useEffect(() => {
+    if (account.isLogin) {
+      push({
+        pathname: '/',
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account.isLogin]);
 
   const formik = useFormik<Login>({
     initialValues: {

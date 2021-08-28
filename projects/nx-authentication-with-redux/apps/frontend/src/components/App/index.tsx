@@ -5,23 +5,15 @@ import HomePage from '../HomePage';
 import LoginPage from '../LoginPage';
 import PrivateRoute from '../PrivateRoute';
 import LoginAlert from '../LoginPage/LoginAlert';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../state';
 
 export function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const location = useLocation();
-
-  useEffect(() => {
-    getLoginStatus();
-  }, [location]);
-
-  function getLoginStatus() {
-    const serializedUser = localStorage.getItem('user');
-    setIsLoggedIn(!!serializedUser);
-  }
+  const isLogin = useSelector(({ account }: RootState) => account.isLogin);
 
   return (
     <div>
-      {!isLoggedIn && (
+      {!isLogin && (
         <div
           style={{
             maxWidth: '320px',
