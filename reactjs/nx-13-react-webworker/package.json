@@ -1,6 +1,6 @@
 {
   "name": "nx-13-react-webworker",
-  "version": "0.0.0",
+  "version": "0.6.9",
   "license": "MIT",
   "scripts": {
     "start": "nx serve",

@@ -24,6 +24,7 @@ export function App() {
 
   return (
     <StyledApp>
+      <h1>Welcome frontend</h1>
       <button onClick={handleMint}>Mint</button>
       <div>Hash: {mint.hash}</div>
       <div>Nonce: {mint.nonce}</div>
