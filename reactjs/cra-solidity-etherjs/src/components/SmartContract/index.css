@@ -1,0 +1,15 @@
+.Container {
+  display: flex;
+}
+.Left {
+  flex: auto;
+}
+
+.Right {
+  flex: 1 1 100px;
+}
+
+.Button {
+  display: block;
+  margin: 1rem;
+}
