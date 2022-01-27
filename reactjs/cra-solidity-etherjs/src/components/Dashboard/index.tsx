@@ -10,8 +10,11 @@ import {
 } from '@ant-design/icons';
 
 import SmartContract from '../SmartContract';
+import ConnectButton from '../ConnectButton';
+
 
 import './index.css';
+;
 
 const { Header, Sider, Content } = Layout;
 
@@ -45,6 +48,7 @@ const Dashboard: React.FC = () => {
                         className: 'trigger',
                         onClick: handleToggle,
                     })}
+                    <ConnectButton />
                 </Header>
                 <Content
                     className="site-layout-background"
