@@ -21,7 +21,6 @@ const CONTRACT_NAME = 'MyContract';
 
 (function initSupportedSolcVersion() {
     (pathToURL as any)[DEFAULT_VERSION] = baseURLBin;
-    (pathToURL as any)[DEFAULT_VERSION] = baseURLBin;
 })();
 
 
