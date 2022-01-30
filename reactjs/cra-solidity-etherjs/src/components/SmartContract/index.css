@@ -7,11 +7,12 @@
 
 .Right {
   flex: 1 1 100px;
+  padding: 1rem
 }
 
-.Button {
-  display: block;
-  margin: 1rem;
+.ButtonGroup button{
+  margin-right: 1rem;
+  margin-bottom: 1rem;
 }
 
 .CodeEditor{
