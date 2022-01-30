@@ -124,7 +124,7 @@ const SmartContract: React.FC = () => {
                     address: txReceipt?.contractAddress || '',
                     name: CONTRACT_FILE_NAME + ":" + CONTRACT_NAME,
                     sourceCode: JSON.stringify({
-                        ...compileResult?.source,
+                        sources: compileResult?.source.sources,
                         language: "Solidity",
                     }),
                     compilerversion: 'v' + SOLIDITY_COMPILER_VERSION,
@@ -162,6 +162,19 @@ const SmartContract: React.FC = () => {
         await handlePublishing(transactionReceipt, compileResult);
     }
 
+    const handleDownloadJsonInput = async () => {
+        const contentType = 'application/octet-stream';
+        const content = JSON.stringify({
+            sources: compileResult?.source.sources,
+            language: "Solidity",
+        });
+        var a = document.createElement('a');
+        var blob = new Blob([content], { 'type': contentType });
+        a.href = window.URL.createObjectURL(blob);
+        a.download = "Standard-Input-Json-" + Date.now() + ".json";
+        a.click();
+    }
+
     return <div className='Container'>
         <div className='Left'>
             <Select defaultValue={TEST_CONTRACTS[0].name} onChange={handleContractChange} style={{ width: '250px' }}>
@@ -176,6 +189,7 @@ const SmartContract: React.FC = () => {
                 <Button onClick={handleCompile} type='primary' disabled={!source || deploying || publishing} loading={compiling} >Compile</Button>
                 <Button onClick={handleDeploy} danger disabled={!active || compiling || !compileResult} loading={deploying}>Deploy</Button>
                 <Button onClick={handleRetryPublishing} danger disabled={!publishingError} >Retry publishing</Button>
+                <Button onClick={handleDownloadJsonInput} danger disabled={!active || compiling || !compileResult} >Download JSON</Button>
             </div>
             <Space direction="vertical">
                 <Link href='https://docs.etherscan.io/getting-started/viewing-api-usage-statistics' target='_blank' rel="noreferrer">Get EtherScan API Key</Link>
