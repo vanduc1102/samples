@@ -28,6 +28,8 @@ const API_ENDPOINTS: Record<string, string> = {
     "4": "//api-rinkeby.etherscan.io/api",
     "5": "//api-goerli.etherscan.io/api",
     "42": "//api-kovan.etherscan.io/api",
+    "56": "https://api.bscscan.com/api",
+    "97": "https://api-testnet.bscscan.com/api",
 };
 
 export async function verifyAndPublicContractSourceCode(

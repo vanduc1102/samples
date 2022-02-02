@@ -8,7 +8,7 @@ import { baseURLBin, compile, CompilerAbstract, pathToURL } from '@remix-project
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 
 import { TEST_CONTRACTS } from '../../configurations/contract';
-import { ETHERSCAN_API_SECRET_KEY, SOLIDITY_COMPILER_VERSION, SPDX_LICENSE_IDENTIFIER } from '../../constants';
+import { BSC_CHAIN_IDS, ETHERSCAN_API_SECRET_KEY, SOLIDITY_COMPILER_VERSION, SPDX_LICENSE_IDENTIFIER } from '../../constants';
 import { handleNpmImport } from '../../utils/content-resolver'
 import * as etherscanClient from '../../clients/etherscan-client'
 
@@ -17,17 +17,13 @@ import './index.css'
 
 const { TextArea } = Input;
 const { Option } = Select;
-const { Link } = Typography
-
-
-
-const CONTRACT_FILE_NAME = 'MyContract.sol';
-const CONTRACT_NAME = 'MyContract';
+const { Link } = Typography;
 
 (function initSupportedSolcVersion() {
     (pathToURL as any)["soljson-v0.8.11+commit.d7f03943.js"] = baseURLBin;
 })();
 
+const CONTRACT_NAME_REGEX = /contract\s(\S+)\s/;
 
 const SmartContract: React.FC = () => {
     const [compiling, setCompiling] = useState(false);
@@ -39,11 +35,21 @@ const SmartContract: React.FC = () => {
     const { library, active, chainId } = useWeb3React<Web3Provider>();
     const [publishing, setPublishing] = useState(false);
     const [etherscanApiKey, setEtherscanApiKey] = useState('');
+    const [contractName, setContractName] = useState('');
 
     useEffect(() => {
         const key = localStorage.getItem(ETHERSCAN_API_SECRET_KEY);
         setEtherscanApiKey(key || '');
     }, [])
+
+    useEffect(() => {
+        if (source) {
+            const matches = CONTRACT_NAME_REGEX.exec(source);
+            if (matches && matches[1]) {
+                setContractName(matches[1])
+            }
+        }
+    }, [source])
 
     const handleCompile = async () => {
         setCompiling(true);
@@ -51,7 +57,7 @@ const SmartContract: React.FC = () => {
         try {
             const response = await compile(
                 {
-                    [CONTRACT_FILE_NAME]: {
+                    [contractName + '.sol']: {
                         content: source
                     }
                 }
@@ -78,7 +84,7 @@ const SmartContract: React.FC = () => {
     const handleDeploy = async () => {
         setDeploying(true);
         try {
-            const compiledContract = compileResult?.getContract(CONTRACT_NAME);
+            const compiledContract = compileResult?.getContract(contractName);
             const contractBinary = '0x' + compiledContract?.object.evm.bytecode.object;
             const contractABI = compiledContract?.object.abi;
 
@@ -122,7 +128,7 @@ const SmartContract: React.FC = () => {
             const verifiedResponse = await etherscanClient.verifyAndPublicContractSourceCode(etherscanApiKey, chainId + '',
                 {
                     address: txReceipt?.contractAddress || '',
-                    name: CONTRACT_FILE_NAME + ":" + CONTRACT_NAME,
+                    name: contractName + ".sol:" + contractName,
                     sourceCode: JSON.stringify({
                         sources: compileResult?.source.sources,
                         language: "Solidity",
@@ -182,6 +188,7 @@ const SmartContract: React.FC = () => {
                     <Option key={contract.name}>{contract.name}</Option>
                 ))}
             </Select>
+            <Typography> Contract Name : {contractName}</Typography>
             <TextArea className='CodeEditor' autoSize value={source} showCount onChange={(event) => setSource(event.target.value)} />
         </div>
         <div className='Right'>
@@ -189,10 +196,10 @@ const SmartContract: React.FC = () => {
                 <Button onClick={handleCompile} type='primary' disabled={!source || deploying || publishing} loading={compiling} >Compile</Button>
                 <Button onClick={handleDeploy} danger disabled={!active || compiling || !compileResult} loading={deploying}>Deploy</Button>
                 <Button onClick={handleRetryPublishing} danger disabled={!publishingError} >Retry publishing</Button>
-                <Button onClick={handleDownloadJsonInput} danger disabled={!active || compiling || !compileResult} >Download JSON</Button>
+                <Button onClick={handleDownloadJsonInput} danger disabled={!active || compiling || !compileResult} >Download Standard-Input-Json</Button>
             </div>
             <Space direction="vertical">
-                <Link href='https://docs.etherscan.io/getting-started/viewing-api-usage-statistics' target='_blank' rel="noreferrer">Get EtherScan API Key</Link>
+                <Link href={BSC_CHAIN_IDS.includes(chainId || 0) ? 'https://docs.bscscan.com/getting-started/viewing-api-usage-statistics' : 'https://docs.etherscan.io/getting-started/viewing-api-usage-statistics'} target='_blank' rel="noreferrer">Get Explorer API Key</Link>
                 <Input.Password
                     onChange={(event) => handleApiKeyChange(event.target.value)}
                     value={etherscanApiKey}
