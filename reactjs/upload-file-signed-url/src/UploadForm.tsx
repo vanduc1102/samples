@@ -66,7 +66,7 @@ function getBase64(file: File): Promise<string> {
     });
 }
 
-async function uploadFile(signedUrl: string, file: File) {
+async function axiosUpload(signedUrl: string, file: File) {
     try {
         const response = await axios.put(signedUrl, {
             file
