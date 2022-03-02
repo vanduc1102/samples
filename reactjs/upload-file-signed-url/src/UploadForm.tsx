@@ -1,5 +1,5 @@
-import React, { SyntheticEvent, useState } from 'react';
 import axios from 'axios';
+import React, { SyntheticEvent, useState } from 'react';
 import { Input, Image, notification } from 'antd';
 
 const UploadForm: React.FC = () => {
@@ -13,7 +13,7 @@ const UploadForm: React.FC = () => {
             setPreviewImage(imageBase64);
             if (signedUrl) {
                 const response = await fetchUpload(signedUrl, files[0]);
-                if (response) {
+                if (response !== undefined) {
                     notification.success({
                         message: "Uploaded to GCS successfully"
                     })
@@ -36,7 +36,7 @@ const UploadForm: React.FC = () => {
             <div><a href="https://cloud.google.com/storage/docs/samples/storage-generate-upload-signed-url-v4" target={"_blank"} rel="noreferrer">For creating SignedUrl on GCP</a></div>
             <label >SingedUrl: </label>
             <Input.TextArea onChange={(event) => {
-                const text = event.target.value;
+                const text = (event.target.value || '').trim();
                 localStorage.setItem("signedUrl", text);
                 setSignedUrl(text);
             }} value={signedUrl} rows={5} />
@@ -72,7 +72,7 @@ async function axiosUpload(signedUrl: string, file: File) {
             file
         }, {
             headers: {
-                // BUG on axios, always set 11 for Content-Length
+                // BUG on axios, it always set 11 for Content-Length
                 'Content-Type': file.type
             }
         });
@@ -84,7 +84,18 @@ async function axiosUpload(signedUrl: string, file: File) {
 }
 
 async function fetchUpload(signedUrl: string, file: File) {
-    return fetch(signedUrl, { method: "PUT", body: file }).then(res => res.json());
+    try {
+        const response = await fetch(signedUrl, { method: "PUT", body: file }).then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not OK');
+            }
+            return response.text();
+        });
+        return response;
+    } catch (error) {
+        console.log(error);
+    }
+
 }
 
 
