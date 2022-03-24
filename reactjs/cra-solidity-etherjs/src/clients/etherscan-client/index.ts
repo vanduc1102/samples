@@ -2,6 +2,7 @@ import Axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 import { EtherScanResponse, VerifyContractRequest } from "./types";
 
 const NOT_OK_STATUS = "0";
+const ALREADY_VERIFIED = "Already Verified";
 
 const retryWrapper = (axios: AxiosInstance, options: any) => {
     const maxTime = options.retry_time || 0;
@@ -11,10 +12,10 @@ const retryWrapper = (axios: AxiosInstance, options: any) => {
     let counter = 0;
     axios.interceptors.response.use((response) => {
         const config = response.config as AxiosRequestConfig;
-        if (counter < maxTime && response?.data?.status === NOT_OK_STATUS) {
+        if (counter < maxTime && response?.data?.status === NOT_OK_STATUS && response?.data?.result !== ALREADY_VERIFIED ) {
             counter++;
             return new Promise((resolve) => {
-                const waitTime = Math.floor(2000 + Math.random() * 1000);
+                const waitTime = Math.floor(3000 + Math.random() * 1000);
                 setTimeout(() => resolve(axios(config)), waitTime);
             });
         }
@@ -49,6 +50,9 @@ export async function verifyAndPublicContractSourceCode(
     bodyFormData.append("optimizationUsed", "0");
     bodyFormData.append("runs", "200");
     bodyFormData.append("licenseType", requestBody.licenseType);
+    if(requestBody.constructorArguments){
+        bodyFormData.append("constructorArguements", requestBody.constructorArguments.replace("0x",""));
+    }
     const instance = Axios.create();
     retryWrapper(instance, { retry_time: 5 });
     return instance.post<any, EtherScanResponse>(
@@ -67,8 +71,9 @@ export async function codeVerificationStatus(
     bodyFormData.append("guid", txHash);
     bodyFormData.append("module", "contract");
     bodyFormData.append("action", "checkverifystatus");
-
-    return Axios.post<any, EtherScanResponse>(
+    const instance = Axios.create();
+    retryWrapper(instance, { retry_time: 15 });
+    return instance.post<any, EtherScanResponse>(
         API_ENDPOINTS[chainId],
         bodyFormData
     );

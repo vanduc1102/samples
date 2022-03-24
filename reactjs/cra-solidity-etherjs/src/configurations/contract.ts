@@ -1,3 +1,5 @@
+import { ERC721_ARGS } from "./erc71-args";
+
 export const TEST_CONTRACT_1 = `
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.4.16 <0.9.0;
@@ -138,4 +140,8 @@ export const TEST_CONTRACTS = [
         name: "ERC71 - With Roles",
         content: TEST_CONTRACT_3,
     },
+    {
+        name:"ERC71 - With Args",
+        content: ERC721_ARGS
+    }
 ];
