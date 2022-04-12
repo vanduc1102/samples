@@ -1,0 +1,11 @@
+### Health
+GET http://localhost:3000/api/health
+
+
+### Authentication
+POST http://localhost:3000/api/v1/authentication/login
+content-type: application/json
+
+{
+    "userId":"vanducld1@gmail.com"
+}
