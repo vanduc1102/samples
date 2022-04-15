@@ -1,82 +1,85 @@
 package helloworld;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
+import dto.GetSignedUrlRequestBody;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import dto.GetSignedUrlResponseBody;
+import dto.Response;
 
 /**
  * Handler for requests to Lambda function.
  */
 public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
+        private final String bucketName = System.getenv("UPLOAD_BUCKET");
+        private final Region region = Region.of(System.getenv("AWS_REGION"));
+        private final Map headers = new HashMap<String, String>() {
+                {
+                        put("Content-Type", "application/json");
+                        put("X-Custom-Header", "application/json");
+                }
+        };
 
-    public APIGatewayProxyResponseEvent handleRequest(final APIGatewayProxyRequestEvent input, final Context context) {
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Content-Type", "application/json");
-        headers.put("X-Custom-Header", "application/json");
+        public APIGatewayProxyResponseEvent handleRequest(final APIGatewayProxyRequestEvent input,
+                        final Context context) {
+                var logger = context.getLogger();
+                logger.log("REQUEST BODY: " + input.getBody().toString());
 
-        APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent()
-                .withHeaders(headers);
-        try {
-            final String pageContents = this.getPageContents("https://checkip.amazonaws.com");
-            String output = String.format("{\"data\": { \"message\": \"hello world\", \"location\": \"%s\" }}", pageContents);
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                GetSignedUrlRequestBody body = gson.fromJson(input.getBody(), GetSignedUrlRequestBody.class);
 
-            return response
-                    .withStatusCode(200)
-                    .withBody(output);
-        } catch (IOException e) {
-            return response
-                    .withBody("{}")
-                    .withStatusCode(500);
+                String signedUrl = getPreSignedUrl(body.getFileName(), body.getFileType(), body.getUserId(),
+                                body.getStore(),
+                                body.getAmount());
+
+                APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent()
+                                .withHeaders(headers);
+
+                logger.log("RESPONSE URL: " + signedUrl);
+
+                return response
+                                .withStatusCode(200)
+                                .withBody(gson.toJson(new Response<>(new GetSignedUrlResponseBody(signedUrl))));
+
         }
-    }
 
-    public String signBucket( String bucketName, String keyName) {
-        S3Presigner presigner = S3Presigner.builder()
-                .region(region)
-                .build();
-        try {
-            PutObjectRequest objectRequest = PutObjectRequest.builder()
-                    .bucket(bucketName)
-                    .key(keyName)
-                    .contentType("text/plain")
-                    .build();
+        public String getPreSignedUrl(String fileName, String fileType, String userId, String storeName,
+                        String amount) {
+                S3Presigner preSigner = S3Presigner.builder()
+                                .region(region)
+                                .build();
 
-            PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
-                    .signatureDuration(Duration.ofMinutes(10))
-                    .putObjectRequest(objectRequest)
-                    .build();
+                PutObjectRequest objectRequest = PutObjectRequest.builder()
+                                .bucket(bucketName)
+                                .key(fileName)
+                                // .metadata(new HashMap<>() {
+                                // {
+                                // put("userId", userId);
+                                // put("amount", amount);
+                                // put("store", storeName);
+                                // }
+                                // })
+                                .contentType(fileType)
+                                .build();
 
-            PresignedPutObjectRequest presignedRequest = presigner.presignPutObject(presignRequest);
+                PutObjectPresignRequest preSignRequest = PutObjectPresignRequest.builder()
+                                .signatureDuration(Duration.ofMinutes(15))
+                                .putObjectRequest(objectRequest)
+                                .build();
 
-
-            String myURL = presignedRequest.url().toString();
-            System.out.println("Presigned URL to upload a file to: " +myURL);
-            System.out.println("Which HTTP method needs to be used when uploading a file: " +
-                    presignedRequest.httpRequest().method());
-
-            // Upload content to the Amazon S3 bucket by using this URL
-            URL url = presignedRequest.url();
-            return url.toString();
-
-        } catch (S3Exception e) {
-            e.getStackTrace();
-        } catch (IOException e) {
-            e.getStackTrace();
+                PresignedPutObjectRequest preSignedRequest = preSigner.presignPutObject(preSignRequest);
+                return preSignedRequest.url().toString();
         }
-    }
-    private String getPageContents(String address) throws IOException{
-        URL url = new URL(address);
-        try(BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()))) {
-            return br.lines().collect(Collectors.joining(System.lineSeparator()));
-        }
-    }
 }

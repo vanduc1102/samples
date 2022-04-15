@@ -3,9 +3,9 @@ version = 0.1
 [default.deploy]
 [default.deploy.parameters]
 stack_name = "hello-world-lambda"
-s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-dwioxhghgqsr"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-10xn6zuxe2jit"
 s3_prefix = "hello-world-lambda"
-region = "ap-south-1"
+region = "ap-southeast-1"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
 disable_rollback = true
