@@ -6,6 +6,7 @@ public class GetSignedUrlRequestBody {
     private String userId;
     private String amount;
     private String store;
+    private Long contentLength;
 
     public String getFileName() {
         return fileName;
@@ -45,6 +46,13 @@ public class GetSignedUrlRequestBody {
 
     public void setStore(String store) {
         this.store = store;
+    }
+
+    public Long getContentLength() {
+        return contentLength;
+    }
+    public void setContentLength(Long contentLength) {
+        this.contentLength = contentLength;
     }
 
 }

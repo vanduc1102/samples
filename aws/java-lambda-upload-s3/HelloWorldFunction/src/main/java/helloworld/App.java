@@ -43,9 +43,7 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
 
                 GetSignedUrlRequestBody body = gson.fromJson(input.getBody(), GetSignedUrlRequestBody.class);
 
-                String signedUrl = getPreSignedUrl(body.getFileName(), body.getFileType(), body.getUserId(),
-                                body.getStore(),
-                                body.getAmount());
+                String signedUrl = getPreSignedUrl(body);
 
                 APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent()
                                 .withHeaders(headers);
@@ -58,21 +56,21 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
 
         }
 
-        public String getPreSignedUrl(String fileName, String fileType, String userId, String storeName,
-                        String amount) {
+        public String getPreSignedUrl(GetSignedUrlRequestBody object) {
                 S3Presigner preSigner = S3Presigner.builder()
                                 .region(REGION)
                                 .build();
 
                 PutObjectRequest objectRequest = PutObjectRequest.builder()
                                 .bucket(UPLOAD_BUCKET)
-                                .key(fileName)
-                                .contentType(fileType)
+                                .key(object.getFileName())
+                                .contentType(object.getFileType())
+                                .contentLength(object.getContentLength())
                                 .metadata(new HashMap<>() {
                                         {
-                                                put("userId", userId);
-                                                put("amount", amount);
-                                                put("store", storeName);
+                                                put("userId", object.getUserId());
+                                                put("amount", object.getAmount());
+                                                put("store", object.getStore());
                                         }
                                 })
                                 .build();
