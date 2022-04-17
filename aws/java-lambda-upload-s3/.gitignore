@@ -3,3 +3,5 @@ java-lambda-upload-s3.iml
 .aws-sam
 HelloWorldFunction/target/
 local-*
+HelloWorldFunction/dependency-reduced-pom.xml
+.vscode
