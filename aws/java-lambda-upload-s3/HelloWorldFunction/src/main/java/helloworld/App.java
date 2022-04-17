@@ -23,8 +23,10 @@ import dto.Response;
  * Handler for requests to Lambda function.
  */
 public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
-        private final String bucketName = System.getenv("UPLOAD_BUCKET");
-        private final Region region = Region.of(System.getenv("AWS_REGION"));
+        private final String UPLOAD_BUCKET = System.getenv("UPLOAD_BUCKET");
+        private final Region REGION = Region.of(System.getenv("AWS_REGION"));
+        private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
         private final Map headers = new HashMap<String, String>() {
                 {
                         put("Content-Type", "application/json");
@@ -36,8 +38,9 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
                         final Context context) {
                 var logger = context.getLogger();
                 logger.log("REQUEST BODY: " + input.getBody().toString());
+                logger.log("UPLOAD_BUCKET: " + UPLOAD_BUCKET);
+                logger.log("REGION: " + REGION);
 
-                Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 GetSignedUrlRequestBody body = gson.fromJson(input.getBody(), GetSignedUrlRequestBody.class);
 
                 String signedUrl = getPreSignedUrl(body.getFileName(), body.getFileType(), body.getUserId(),
@@ -58,20 +61,20 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
         public String getPreSignedUrl(String fileName, String fileType, String userId, String storeName,
                         String amount) {
                 S3Presigner preSigner = S3Presigner.builder()
-                                .region(region)
+                                .region(REGION)
                                 .build();
 
                 PutObjectRequest objectRequest = PutObjectRequest.builder()
-                                .bucket(bucketName)
+                                .bucket(UPLOAD_BUCKET)
                                 .key(fileName)
-                                // .metadata(new HashMap<>() {
-                                // {
-                                // put("userId", userId);
-                                // put("amount", amount);
-                                // put("store", storeName);
-                                // }
-                                // })
                                 .contentType(fileType)
+                                .metadata(new HashMap<>() {
+                                        {
+                                                put("userId", userId);
+                                                put("amount", amount);
+                                                put("store", storeName);
+                                        }
+                                })
                                 .build();
 
                 PutObjectPresignRequest preSignRequest = PutObjectPresignRequest.builder()
