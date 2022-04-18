@@ -25,12 +25,12 @@
       <groupId>javax.mail</groupId>
       <artifactId>javax.mail-api</artifactId>
       <version>1.5.5</version>
-  </dependency>
-  <dependency>
+    </dependency>
+    <dependency>
       <groupId>com.sun.mail</groupId>
       <artifactId>javax.mail</artifactId>
       <version>1.5.5</version>
-  </dependency>
+    </dependency>
     <dependency>
       <groupId>software.amazon.awssdk</groupId>
       <artifactId>s3</artifactId>
@@ -39,7 +39,10 @@
       <groupId>software.amazon.awssdk</groupId>
       <artifactId>ses</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>apache-client</artifactId>
+    </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>

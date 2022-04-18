@@ -51,6 +51,7 @@ public class GetSignedUrlRequestBody {
     public Long getContentLength() {
         return contentLength;
     }
+
     public void setContentLength(Long contentLength) {
         this.contentLength = contentLength;
     }

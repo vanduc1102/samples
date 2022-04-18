@@ -5,36 +5,98 @@ Description: >
 
   Sample SAM Template for java-lambda-s3
 
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
     Timeout: 20
 
 Parameters:
-  UploadFileBucket:
-    Type: String
-    Default: receipt-listing-ap-southeast-1
-    Description: S3 bucket that's used for the Lambda event notification
-
   AppEnv:
     Type: String
     Default: stage
     Description: Application environment
+  NotificationSender:
+    Type: String
+    Default: vanducld@gmail.com
+    Description: Sender email  for SES
+  NotificationReceiver:
+    Type: String
+    Default: vanducld@icloud.com
+    Description: Receiver email  for SES
+  UploadFileBucketName:
+    Type: String
+    Default: receipt-listing-2022-04-18-17-48-ap-southeast-1
+    Description: S3 bucket that's used for the Lambda event notification
 
 Resources:
-  GateWayAPI:
+  GatewayAPI:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref AppEnv
       Cors:
-        AllowMethods: "'GET,PUT,POST,OPTIONS'"
-        AllowHeaders: "'content-type'"
+        AllowMethods: "'POST,OPTIONS'"
+        AllowHeaders: "'*'"
         AllowOrigin: "'*'"
         AllowCredentials: false
         MaxAge: "'86400'"
 
+  UploadBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref UploadFileBucketName
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - "*"
+            AllowedMethods:
+              - GET
+              - PUT
+            AllowedOrigins:
+              - "*"
+            ExposedHeaders:
+              - Date
+            MaxAge: 3600
+  UploadFileFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: UploadFileFunction
+      Role: !GetAtt LambdaIAMRole.Arn
+      Handler: com.github.vanduc1102.uploadfile.App::handleRequest
+      Runtime: java11
+      MemorySize: 512
+      Environment:
+        Variables:
+          UPLOAD_BUCKET: !Ref UploadFileBucketName
+          JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1
+      Events:
+        UploadFile:
+          Type: Api
+          Properties:
+            Path: /upload-file
+            Method: post
+            RestApiId: !Ref GatewayAPI
+
+  SendNotificationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: SendNotificationFunction
+      Role: !GetAtt LambdaIAMRole.Arn
+      Handler: com.github.vanduc1102.sendnofitication.App::handleRequest
+      Runtime: java11
+      MemorySize: 512
+      Environment:
+        Variables:
+          NOTIFICATION_SENDER: !Ref NotificationSender
+          NOTIFICATION_RECEIVER: !Ref NotificationReceiver
+          UPLOAD_BUCKET: !Ref UploadFileBucketName
+          JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1
+      Events:
+        PutUploadFileEvent:
+          Type: S3
+          Properties:
+            Bucket: !Ref UploadBucket
+            Events: s3:ObjectCreated:Put
   LambdaIAMRole:
-    Type: 'AWS::IAM::Role'
+    Type: "AWS::IAM::Role"
     Properties:
       AssumeRolePolicyDocument:
         Version: 2012-10-17
@@ -44,7 +106,7 @@ Resources:
               Service:
                 - lambda.amazonaws.com
             Action:
-              - 'sts:AssumeRole'
+              - "sts:AssumeRole"
       Path: /
       Policies:
         - PolicyName: root
@@ -53,70 +115,24 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  - 's3:GetBucketNotification'
-                  - 's3:PutBucketNotification'
-                  - 's3:GetObject'
-                  - 's3:PutObject'
-                Resource: !Sub 'arn:aws:s3:::${UploadFileBucket}/*'
+                  - "s3:GetObject"
+                  - "s3:PutObject"
+                Resource: !Sub "arn:aws:s3:::${UploadFileBucketName}/*"
               - Effect: Allow
                 Action:
-                  - 'logs:CreateLogGroup'
-                  - 'logs:CreateLogStream'
-                  - 'logs:PutLogEvents'
-                Resource: 'arn:aws:logs:*:*:*'
-  UploadFileFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-    Properties:
-      CodeUri: UploadFileFunction
-      Role: !GetAtt LambdaIAMRole.Arn
-      Handler: com.github.vanduc1102.uploadfile.App::handleRequest
-      Runtime: java11
-      MemorySize: 512
-      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
-        Variables:
-          UPLOAD_BUCKET: !Ref UploadFileBucket
-          JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1 # More info about tiered compilation https://aws.amazon.com/blogs/compute/optimizing-aws-lambda-function-performance-for-java/
-      Events:
-        UploadFile:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-          Properties:
-            Path: /upload-file
-            Method: post
-            RestApiId: !Ref GateWayAPI
-
-  SendNotificationFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-    Properties:
-      CodeUri: SendNotificationFunction
-      Role: !GetAtt LambdaIAMRole.Arn
-      Handler: com.github.vanduc1102.sendnofitication.App::handleRequest
-      Runtime: java11
-      MemorySize: 512
-      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
-        Variables:
-          UPLOAD_BUCKET: !Ref UploadFileBucket
-          JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1 # More info about tiered compilation https://aws.amazon.com/blogs/compute/optimizing-aws-lambda-function-performance-for-java/
-      Events:
-        SendNotification:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-          Properties:
-            Path: /send-notification
-            Method: post
-            RestApiId: !Ref GateWayAPI
-
+                  - "ses:SendEmail"
+                  - "ses:SendRawEmail"
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - "logs:CreateLogGroup"
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+                Resource: "arn:aws:logs:*:*:*"
 Outputs:
-  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-  # Find out more about other implicit resources you can reference within SAM
-  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
   UploadFileApi:
     Description: "API Gateway endpoint URL for UploadFileFunction"
-    Value: !Sub "https://${GateWayAPI}.execute-api.${AWS::Region}.amazonaws.com/${AppEnv}/upload-file/"
+    Value: !Sub "https://${GatewayAPI}.execute-api.${AWS::Region}.amazonaws.com/${AppEnv}/upload-file/"
   UploadFileFunction:
     Description: "UploadFileFunction Lambda Function ARN"
     Value: !GetAtt UploadFileFunction.Arn
-  SendNotificationApi:
-    Description: "API Gateway endpoint URL for SendNotificationFunction"
-    Value: !Sub "https://${GateWayAPI}.execute-api.${AWS::Region}.amazonaws.com/${AppEnv}/send-notification/"
-  SendNotificationFunction:
-    Description: "SendNotificationFunction Lambda Function ARN"
-    Value: !GetAtt SendNotificationFunction.Arn

@@ -24,71 +24,73 @@ import com.google.gson.GsonBuilder;
  * Handler for requests to Lambda function.
  */
 public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
-        private final Long MAX_FILE_SIZE = (long) 50 * 1024 * 1024;
-        private final String UPLOAD_BUCKET = System.getenv("UPLOAD_BUCKET");
-        private final Region REGION = Region.of(System.getenv("AWS_REGION"));
-        private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private final Long MAX_FILE_SIZE = (long) 50 * 1024 * 1024;
+    private final String UPLOAD_BUCKET = System.getenv("UPLOAD_BUCKET");
+    private final Region REGION = Region.of(System.getenv("AWS_REGION"));
+    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        private final Map headers = new HashMap<String, String>() {
-                {
-                        put("Content-Type", "application/json");
-                        put("X-Custom-Header", "application/json");
-                }
-        };
-
-        public APIGatewayProxyResponseEvent handleRequest(final APIGatewayProxyRequestEvent input,
-                        final Context context) {
-                var logger = context.getLogger();
-                logger.log("REQUEST BODY: " + input.getBody().toString());
-                logger.log("UPLOAD_BUCKET: " + UPLOAD_BUCKET);
-                logger.log("REGION: " + REGION);
-
-                GetSignedUrlRequestBody body = gson.fromJson(input.getBody(), GetSignedUrlRequestBody.class);
-
-                String signedUrl = getPreSignedUrl(body);
-
-                APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent()
-                                .withHeaders(headers);
-
-                logger.log("RESPONSE URL: " + signedUrl);
-
-                return response
-                                .withStatusCode(200)
-                                .withBody(gson.toJson(new Response<>(new GetSignedUrlResponseBody(signedUrl))));
-
+    private final Map headers = new HashMap<String, String>() {
+        {
+            put("Content-Type", "application/json");
+            put("Access-Control-Allow-Headers", "Content-Type");
+            put("Access-Control-Allow-Origin", "*");
+            put("Access-Control-Allow-Methods", "POST");
         }
+    };
 
-        public String getPreSignedUrl(GetSignedUrlRequestBody object) {
-                S3Presigner preSigner = S3Presigner.builder()
-                                .region(REGION)
-                                .build();
+    public APIGatewayProxyResponseEvent handleRequest(final APIGatewayProxyRequestEvent input,
+            final Context context) {
+        var logger = context.getLogger();
+        logger.log("REQUEST BODY: " + input.getBody().toString());
+        logger.log("UPLOAD_BUCKET: " + UPLOAD_BUCKET);
+        logger.log("REGION: " + REGION);
 
-                PutObjectRequest objectRequest = PutObjectRequest.builder()
-                                .bucket(UPLOAD_BUCKET)
-                                .key(object.getFileName())
-                                .contentType(object.getFileType())
-                                .contentLength(object.getContentLength())
-                                .metadata(new HashMap<>() {
-                                        {
-                                                put("userId", object.getUserId());
-                                                put("amount", object.getAmount());
-                                                put("store", object.getStore());
-                                        }
-                                })
-                                .build();
+        GetSignedUrlRequestBody body = gson.fromJson(input.getBody(), GetSignedUrlRequestBody.class);
 
-                PutObjectPresignRequest preSignRequest = PutObjectPresignRequest.builder()
-                                .signatureDuration(Duration.ofMinutes(15))
-                                .putObjectRequest(objectRequest)
-                                .build();
+        String signedUrl = getPreSignedUrl(body);
 
-                PresignedPutObjectRequest preSignedRequest = preSigner.presignPutObject(preSignRequest);
-                return preSignedRequest.url().toString();
+        APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent()
+                .withHeaders(headers);
+
+        logger.log("RESPONSE URL: " + signedUrl);
+
+        return response
+                .withStatusCode(200)
+                .withBody(gson.toJson(new Response<>(new GetSignedUrlResponseBody(signedUrl))));
+
+    }
+
+    public String getPreSignedUrl(GetSignedUrlRequestBody object) {
+        S3Presigner preSigner = S3Presigner.builder()
+                .region(REGION)
+                .build();
+
+        PutObjectRequest objectRequest = PutObjectRequest.builder()
+                .bucket(UPLOAD_BUCKET)
+                .key(object.getFileName())
+                .contentType(object.getFileType())
+                .contentLength(object.getContentLength())
+                .metadata(new HashMap<>() {
+                    {
+                        put("userId", object.getUserId());
+                        put("amount", object.getAmount());
+                        put("store", object.getStore());
+                    }
+                })
+                .build();
+
+        PutObjectPresignRequest preSignRequest = PutObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofMinutes(15))
+                .putObjectRequest(objectRequest)
+                .build();
+
+        PresignedPutObjectRequest preSignedRequest = preSigner.presignPutObject(preSignRequest);
+        return preSignedRequest.url().toString();
+    }
+
+    public void validateRequestBody(GetSignedUrlRequestBody requestBody) {
+        if (MAX_FILE_SIZE < requestBody.getContentLength()) {
+            throw new RuntimeException("Exceeded file size limit");
         }
-
-        public void validateRequestBody(GetSignedUrlRequestBody requestBody) {
-                if (MAX_FILE_SIZE < requestBody.getContentLength()) {
-                        throw new RuntimeException("Exceeded file size limit");
-                }
-        }
+    }
 }

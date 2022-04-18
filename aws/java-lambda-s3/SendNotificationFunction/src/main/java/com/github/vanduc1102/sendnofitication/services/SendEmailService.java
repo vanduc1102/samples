@@ -15,87 +15,97 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Properties;
 import software.amazon.awssdk.core.SdkBytes;
+import software.amazon.awssdk.http.SdkHttpClient;
+import software.amazon.awssdk.http.apache.ApacheHttpClient;
 import software.amazon.awssdk.services.ses.model.SendRawEmailRequest;
 import software.amazon.awssdk.services.ses.model.RawMessage;
-import software.amazon.awssdk.services.ses.model.SesException;
 
 public class SendEmailService {
-    private final Region region = Region.of(System.getenv("AWS_REGION"));
+    private final Region REGION = Region.of(System.getenv("AWS_REGION"));
+    private final String SENDER = System.getenv("NOTIFICATION_SENDER");
+    private final String RECEIVER = System.getenv("NOTIFICATION_RECEIVER");
 
-    public void send(
+    private final String SUBJECT = "Offline Receipt - User %s just uploaded a new receipt";
+
+    private final String HTML_BODY = "<div>User Id: <strong>%s</strong></div><br />"
+            + "<div>Store Name: <strong>%s</strong></div><br />"
+            + "<div>Amount: <strong>%s</strong></div><br />"
+            + "<div>Receipt URL: <strong>%s</strong></div><br />"
+            + "<div><a href='%s'><strong>Direct Link</strong></a>&nbsp;(valid for 7 days)</div>";
+
+    private final String TEXT_BODY = "User Id: %s"
+            + "\nStore Name: %s"
+            + "\nAmount: %s"
+            + "\nReceipt URL: %s"
+            + "\nDirect Link (valid for 7 days): %s";
+
+    public void sendUploadNotification(String userId, String store, String amount, String objectUrl,
+            String preSignedUrl) throws AddressException, MessagingException, IOException {
+        this.send(
+                SENDER,
+                RECEIVER,
+                String.format(SUBJECT, userId),
+                String.format(TEXT_BODY, userId, store, amount, objectUrl, preSignedUrl),
+                String.format(HTML_BODY, userId, store, amount, objectUrl, preSignedUrl));
+    }
+
+    private void send(
             String sender,
             String recipient,
             String subject,
             String bodyText,
             String bodyHTML) throws AddressException, MessagingException, IOException {
 
+        SdkHttpClient httpClient = ApacheHttpClient.builder().build();
         SesClient client = SesClient.builder()
-                .region(region)
+                .region(REGION)
+                .httpClient(httpClient)
                 .build();
 
         Session session = Session.getDefaultInstance(new Properties());
         MimeMessage message = new MimeMessage(session);
 
-        // Add subject, from and to lines
         message.setSubject(subject, "UTF-8");
         message.setFrom(new InternetAddress(sender));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
 
-        // Create a multipart/alternative child container
         MimeMultipart msgBody = new MimeMultipart("alternative");
 
-        // Create a wrapper for the HTML and text parts
         MimeBodyPart wrap = new MimeBodyPart();
 
-        // Define the text part
         MimeBodyPart textPart = new MimeBodyPart();
         textPart.setContent(bodyText, "text/plain; charset=UTF-8");
 
-        // Define the HTML part
         MimeBodyPart htmlPart = new MimeBodyPart();
         htmlPart.setContent(bodyHTML, "text/html; charset=UTF-8");
 
-        // Add the text and HTML parts to the child container
         msgBody.addBodyPart(textPart);
         msgBody.addBodyPart(htmlPart);
 
-        // Add the child container to the wrapper object
         wrap.setContent(msgBody);
 
-        // Create a multipart/mixed parent container
         MimeMultipart msg = new MimeMultipart("mixed");
 
-        // Add the parent container to the message
         message.setContent(msg);
 
-        // Add the multipart/alternative part to the message
         msg.addBodyPart(wrap);
 
-        try {
-            System.out.println("Attempting to send an email through Amazon SES " + "using the AWS SDK for Java...");
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        message.writeTo(outputStream);
+        ByteBuffer buf = ByteBuffer.wrap(outputStream.toByteArray());
 
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            message.writeTo(outputStream);
-            ByteBuffer buf = ByteBuffer.wrap(outputStream.toByteArray());
+        byte[] arr = new byte[buf.remaining()];
+        buf.get(arr);
 
-            byte[] arr = new byte[buf.remaining()];
-            buf.get(arr);
+        SdkBytes data = SdkBytes.fromByteArray(arr);
+        RawMessage rawMessage = RawMessage.builder()
+                .data(data)
+                .build();
 
-            SdkBytes data = SdkBytes.fromByteArray(arr);
-            RawMessage rawMessage = RawMessage.builder()
-                    .data(data)
-                    .build();
+        SendRawEmailRequest rawEmailRequest = SendRawEmailRequest.builder()
+                .rawMessage(rawMessage)
+                .build();
 
-            SendRawEmailRequest rawEmailRequest = SendRawEmailRequest.builder()
-                    .rawMessage(rawMessage)
-                    .build();
-
-            client.sendRawEmail(rawEmailRequest);
-
-        } catch (SesException e) {
-            System.err.println(e.awsErrorDetails().errorMessage());
-            System.exit(1);
-        }
-
+        client.sendRawEmail(rawEmailRequest);
     }
 }

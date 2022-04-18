@@ -1,63 +1,38 @@
 {
-    "body": "{\"message\": \"hello world\"}",
-    "resource": "/{proxy+}",
-    "path": "/path/to/resource",
-    "httpMethod": "POST",
-    "isBase64Encoded": false,
-    "queryStringParameters": {
-      "foo": "bar"
-    },
-    "pathParameters": {
-      "proxy": "/path/to/resource"
-    },
-    "stageVariables": {
-      "baz": "qux"
-    },
-    "headers": {
-      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-      "Accept-Encoding": "gzip, deflate, sdch",
-      "Accept-Language": "en-US,en;q=0.8",
-      "Cache-Control": "max-age=0",
-      "CloudFront-Forwarded-Proto": "https",
-      "CloudFront-Is-Desktop-Viewer": "true",
-      "CloudFront-Is-Mobile-Viewer": "false",
-      "CloudFront-Is-SmartTV-Viewer": "false",
-      "CloudFront-Is-Tablet-Viewer": "false",
-      "CloudFront-Viewer-Country": "US",
-      "Host": "1234567890.execute-api.us-east-1.amazonaws.com",
-      "Upgrade-Insecure-Requests": "1",
-      "User-Agent": "Custom User Agent String",
-      "Via": "1.1 08f323deadbeefa7af34d5feb414ce27.cloudfront.net (CloudFront)",
-      "X-Amz-Cf-Id": "cDehVQoZnx43VYQb9j2-nvCh-9z396Uhbp027Y2JvkCPNLmGJHqlaA==",
-      "X-Forwarded-For": "127.0.0.1, 127.0.0.2",
-      "X-Forwarded-Port": "443",
-      "X-Forwarded-Proto": "https"
-    },
-    "requestContext": {
-      "accountId": "123456789012",
-      "resourceId": "123456",
-      "stage": "prod",
-      "requestId": "c6af9ac6-7b61-11e6-9a41-93e8deadbeef",
-      "requestTime": "09/Apr/2015:12:34:56 +0000",
-      "requestTimeEpoch": 1428582896000,
-      "identity": {
-        "cognitoIdentityPoolId": null,
-        "accountId": null,
-        "cognitoIdentityId": null,
-        "caller": null,
-        "accessKey": null,
-        "sourceIp": "127.0.0.1",
-        "cognitoAuthenticationType": null,
-        "cognitoAuthenticationProvider": null,
-        "userArn": null,
-        "userAgent": "Custom User Agent String",
-        "user": null
+  "Records": [
+    {
+      "eventVersion": "2.1",
+      "eventSource": "aws:s3",
+      "awsRegion": "ap-south-1",
+      "eventTime": "2022-04-13T08:13:16.403Z",
+      "eventName": "ObjectCreated:Put",
+      "userIdentity": {
+        "principalId": "AWS:AROA4UGNIT27AJCK6POOY:CognitoIdentityCredentials"
       },
-      "path": "/prod/path/to/resource",
-      "resourcePath": "/{proxy+}",
-      "httpMethod": "POST",
-      "apiId": "1234567890",
-      "protocol": "HTTP/1.1"
+      "requestParameters": {
+        "sourceIPAddress": "116.110.40.143"
+      },
+      "responseElements": {
+        "x-amz-request-id": "CWCN0DVACPCAFBXY",
+        "x-amz-id-2": "hBjDnjri3veuilJInnq1wW3ju6XvOXabZTjdqWy9dPbwFPlyMRjHlSlTKVymRnajh+ZvY4imTKj3AhY9ZKFOhUFJpk+DL69r"
+      },
+      "s3": {
+        "s3SchemaVersion": "1.0",
+        "configurationId": "upload-event",
+        "bucket": {
+          "name": "receipt-listing-2022-04-18-17-48-ap-southeast-1",
+          "ownerIdentity": {
+            "principalId": "A8E0N3KJ3CR4J"
+          },
+          "arn": "arn:aws:s3:::receipt-listing-2022-04-18-17-48-ap-southeast-1"
+        },
+        "object": {
+          "key": "one-million-trees-1.webp",
+          "size": 83934,
+          "eTag": "b65f21d288d9833838d0446e5bcfbee3",
+          "sequencer": "006256861C61B55FE5"
+        }
+      }
     }
-  }
-  
+  ]
+}
