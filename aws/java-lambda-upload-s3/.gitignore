@@ -1,7 +1,0 @@
-java-lambda-upload-s3.iml
-.idea
-.aws-sam
-HelloWorldFunction/target/
-local-*
-HelloWorldFunction/dependency-reduced-pom.xml
-.vscode
