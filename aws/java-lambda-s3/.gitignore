@@ -6,3 +6,5 @@ local-*
 /target/
 */target/**
 .class
+*/.apt_generated/**
+dependency-reduced-pom.xml
