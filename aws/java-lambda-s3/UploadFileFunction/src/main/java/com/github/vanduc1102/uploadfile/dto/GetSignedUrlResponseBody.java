@@ -1,17 +1,14 @@
 package com.github.vanduc1102.uploadfile.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@ToString
 public class GetSignedUrlResponseBody {
     private String url;
-
-    public GetSignedUrlResponseBody(String url) {
-        this.url = url;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
 }

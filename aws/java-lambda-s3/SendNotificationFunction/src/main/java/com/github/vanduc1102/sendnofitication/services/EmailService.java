@@ -20,7 +20,7 @@ import software.amazon.awssdk.http.apache.ApacheHttpClient;
 import software.amazon.awssdk.services.ses.model.SendRawEmailRequest;
 import software.amazon.awssdk.services.ses.model.RawMessage;
 
-public class SendEmailService {
+public class EmailService {
     private final Region REGION = Region.of(System.getenv("AWS_REGION"));
     private final String SENDER = System.getenv("NOTIFICATION_SENDER");
     private final String RECEIVER = System.getenv("NOTIFICATION_RECEIVER");
