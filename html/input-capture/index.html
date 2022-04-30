@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML 5 Input capture file</title>
+</head>
+
+<body>
+    <h2>With capture</h2>
+    <div>
+        <label for="soundFile">What does your voice sound like?:</label>
+        <input type="file" id="soundFile" capture="user" accept="audio/*">
+    </div>
+    <div>
+        <label for="videoFile">Upload a video:</label>
+        <input type="file" id="videoFile" capture="environment" accept="video/*">
+    </div>
+    <div>
+        <label for="imageFile">Upload a photo of yourself:</label>
+        <input type="file" id="imageFile" capture="user" accept="image/*">
+    </div>
+    <h2>Without capture</h2>
+    <div>
+        <label for="soundFile">What does your voice sound like?:</label>
+        <input type="file" id="soundFile" accept="audio/*">
+    </div>
+    <div>
+        <label for="videoFile">Upload a video:</label>
+        <input type="file" id="videoFile" accept="video/*">
+    </div>
+    <div>
+        <label for="imageFile">Upload a photo of yourself:</label>
+        <input type="file" id="imageFile" accept="image/*">
+    </div>
+</body>
+
+</html>
