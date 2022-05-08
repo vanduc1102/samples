@@ -1,0 +1,20 @@
+.Container {
+  display: flex;
+}
+.Left {
+  flex: auto;
+}
+
+.Right {
+  flex: 1 1 100px;
+  padding: 1rem
+}
+
+.ButtonGroup button{
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+}
+
+.CodeEditor{
+  margin-top: 1rem;
+}
