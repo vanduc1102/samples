@@ -9,7 +9,7 @@ import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 
 import { TEST_CONTRACTS } from '../../configurations/contract';
 import { BSC_CHAIN_IDS, ETHERSCAN_API_SECRET_KEY, SOLIDITY_COMPILER_VERSION, SPDX_LICENSE_IDENTIFIER } from '../../constants';
-import { handleNpmImport } from '../../utils/content-resolver'
+import { handleNpmImport } from '../../utils/content-resolver';
 import * as etherscanClient from '../../clients/etherscan-client'
 
 
