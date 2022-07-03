@@ -3,10 +3,11 @@ version = 0.1
 [default.deploy]
 [default.deploy.parameters]
 stack_name = "java-lambda-s3"
-s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-10xn6zuxe2jit"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-llbr6vwc0xte"
 s3_prefix = "java-lambda-s3"
 region = "ap-southeast-1"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
 disable_rollback = false
 image_repositories = []
+parameter_overrides = "AppEnv=\"stage\" NotificationSender=\"vanducld@gmail.com\" NotificationReceiver=\"vanducld@icloud.com\" UploadFileBucketName=\"receipt-listing-2022-04-18-17-48-ap-southeast-1\" GoogleCloudVisionKey=\"/lambda/upload-receipt/google-vision-api-key\""

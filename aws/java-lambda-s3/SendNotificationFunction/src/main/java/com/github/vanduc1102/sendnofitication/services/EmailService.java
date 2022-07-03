@@ -9,6 +9,9 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+
+import com.google.cloud.vision.v1.EntityAnnotation;
+
 import javax.mail.internet.MimeBodyPart;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -27,26 +30,26 @@ public class EmailService {
 
     private final String SUBJECT = "Offline Receipt - User %s just uploaded a new receipt";
 
-    private final String HTML_BODY = "<div>User Id: <strong>%s</strong></div><br />"
+    private final String HTML_BODY = "Receipt Score: %s<div>User Id: <strong>%s</strong></div><br />"
             + "<div>Store Name: <strong>%s</strong></div><br />"
             + "<div>Amount: <strong>%s</strong></div><br />"
             + "<div>Receipt URL: <strong>%s</strong></div><br />"
             + "<div><a href='%s'><strong>Direct Link</strong></a>&nbsp;(valid for 7 days)</div>";
 
-    private final String TEXT_BODY = "User Id: %s"
+    private final String TEXT_BODY = "Receipt Score: %s\nUser Id: %s"
             + "\nStore Name: %s"
             + "\nAmount: %s"
             + "\nReceipt URL: %s"
             + "\nDirect Link (valid for 7 days): %s";
 
     public void sendUploadNotification(String userId, String store, String amount, String objectUrl,
-            String preSignedUrl) throws AddressException, MessagingException, IOException {
+            String preSignedUrl, float receiptScore) throws AddressException, MessagingException, IOException {
         this.send(
                 SENDER,
                 RECEIVER,
                 String.format(SUBJECT, userId),
-                String.format(TEXT_BODY, userId, store, amount, objectUrl, preSignedUrl),
-                String.format(HTML_BODY, userId, store, amount, objectUrl, preSignedUrl));
+                String.format(String.valueOf(receiptScore), TEXT_BODY, userId, store, amount, objectUrl, preSignedUrl),
+                String.format(String.valueOf(receiptScore), HTML_BODY, userId, store, amount, objectUrl, preSignedUrl));
     }
 
     private void send(

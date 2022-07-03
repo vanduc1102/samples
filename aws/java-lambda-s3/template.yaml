@@ -26,6 +26,10 @@ Parameters:
     Type: String
     Default: receipt-listing-2022-04-18-17-48-ap-southeast-1
     Description: S3 bucket that's used for the Lambda event notification
+  GoogleCloudVisionKey:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /lambda/upload-receipt/google-vision-api-key
+    Description: Bearer google vision api key
 
 Resources:
   GatewayAPI:
@@ -38,6 +42,24 @@ Resources:
         AllowOrigin: "'*'"
         AllowCredentials: false
         MaxAge: "'86400'"
+
+  BucketToSNSPermission:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: s3.amazonaws.com
+            Action:
+            - SNS:Publish
+            Resource: !Ref S3PutNewObjectEventTopic
+            Condition:
+              StringEquals:
+                aws:SourceArn: !Sub "arn:aws:s3:::${UploadFileBucketName}"
+      Topics:
+        - !Ref S3PutNewObjectEventTopic
 
   UploadBucket:
     Type: AWS::S3::Bucket
@@ -66,6 +88,7 @@ Resources:
       Environment:
         Variables:
           UPLOAD_BUCKET: !Ref UploadFileBucketName
+          GOOGLE_APPLICATION_CREDENTIALS: !Ref GoogleCloudVisionKey
           JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1
       Events:
         UploadFile:
@@ -88,6 +111,7 @@ Resources:
           NOTIFICATION_SENDER: !Ref NotificationSender
           NOTIFICATION_RECEIVER: !Ref NotificationReceiver
           UPLOAD_BUCKET: !Ref UploadFileBucketName
+          GOOGLE_APPLICATION_CREDENTIALS: !Ref GoogleCloudVisionKey
           JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1
       Events:
         PutUploadFileEvent:
@@ -95,6 +119,22 @@ Resources:
           Properties:
             Bucket: !Ref UploadBucket
             Events: s3:ObjectCreated:Put
+  S3PutNewObjectEventTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: offline-receipt-s3-put-new-object-event-to-email
+      Tags:
+      -
+        Key: Project
+        Value: Offline Receipt
+
+  S3PutNewObjectEventSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: !Ref NotificationReceiver
+      Protocol: email
+      TopicArn: !Ref S3PutNewObjectEventTopic
+
   LambdaIAMRole:
     Type: "AWS::IAM::Role"
     Properties:

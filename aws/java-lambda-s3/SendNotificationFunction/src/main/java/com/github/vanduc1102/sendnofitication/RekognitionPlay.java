@@ -2,7 +2,6 @@ package com.github.vanduc1102.sendnofitication;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import lombok.val;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.rekognition.RekognitionClient;
@@ -11,12 +10,10 @@ import software.amazon.awssdk.services.textract.TextractClient;
 import software.amazon.awssdk.services.textract.model.*;
 import software.amazon.awssdk.services.textract.model.S3Object;
 
-import java.io.File;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class RekognitionPlay {

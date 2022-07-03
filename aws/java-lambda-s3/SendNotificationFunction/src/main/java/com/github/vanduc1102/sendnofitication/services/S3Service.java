@@ -40,6 +40,15 @@ public class S3Service {
         return presignedGetObjectRequest.url().toString();
     }
 
+    public byte[] getObject(String bucketName, String fileName){
+        GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                .bucket(bucketName)
+                .key(fileName)
+                .build();
+
+       return  s3Client.getObjectAsBytes(getObjectRequest).asByteArray();
+    }
+
     public Map<String, String> getObjectMeta(String bucketName, String keyName) {
         HeadObjectRequest headObjectRequest = HeadObjectRequest.builder()
                 .bucket(bucketName)

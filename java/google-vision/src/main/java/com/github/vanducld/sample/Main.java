@@ -5,6 +5,7 @@ import com.google.protobuf.ByteString;
 import java.io.FileInputStream;
 
 import static com.github.vanducld.sample.GoogleVisionClient.getReceiptScore;
+import static com.github.vanducld.sample.GoogleVisionClient.getReceiptScoreViaRest;
 
 public class Main {
 
@@ -16,11 +17,11 @@ public class Main {
         // once, and can be reused for multiple requests. After completing all of your requests, call
         // the "close" method on the client to safely clean up any remaining background resources
         // The path to the image file to annotate
-        String filePath = "/Users/duc.nguyen/Downloads/Offline-Receipts/IMG_20220506_154920_822.jpg";
+        String filePath = "/Users/duc.nguyen/Downloads/Offline-Receipts/srunding-authentic-indonesian.jpeg";
 //        String filePath = "/Users/duc.nguyen/Pictures/background-green/doan-tuan-3QFQOxGCVmE-unsplash.jpeg";
-        ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
+        byte[] imgBytes = (new FileInputStream(filePath)).readAllBytes();
 //        ByteString imgBytes = ByteString.copyFrom(GetObjectS3.getDefaultFileFromS3());
-        float receiptScore = getReceiptScore(imgBytes);
+        float receiptScore = getReceiptScoreViaRest(imgBytes);
         System.out.println(System.nanoTime() + " - Score: " + receiptScore);
     }
 }
