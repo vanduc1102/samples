@@ -1,0 +1,6 @@
+### Book Service
+GET http://localhost:8080/book-service/books
+
+
+### Rating Serivce
+GET http://localhost:8080/rating-service/ratings
