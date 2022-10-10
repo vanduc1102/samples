@@ -1,0 +1,15 @@
+version: '3.1'
+
+services:
+
+    db:
+        image: postgres:14
+        restart: "no"
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_PASSWORD: example
+            POSTGRES_USER: vanduc1102
+            POSTGRES_DB: gs-rest-service
+            POSTGRES_HOST_AUTH_METHOD: trust
+

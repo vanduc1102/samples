@@ -1,0 +1,12 @@
+version: '3'
+
+tasks:
+    format-check:
+        desc: Spotless check
+        cmds:
+            - ./mvnw spotless:check
+    format-apply:
+        desc: Spotless apply
+        cmds:
+            - ./mvnw spotless:apply
+
