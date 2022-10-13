@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  app:
+    image: booking-api:latest
+    profiles:
+      - integration
+    build:
+      context: .
+      target: prod
+    container_name: app
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/booking-api
+      - SPRING_DATASOURCE_USERNAME=compose-postgres
+      - SPRING_DATASOURCE_PASSWORD=compose-postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+  db:
+    image: postgres:13-bullseye
+    profiles:
+      - development
+    container_name: db
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=compose-postgres
+      - POSTGRES_PASSWORD=compose-postgres
+      - POSTGRES_DB=booking-api
