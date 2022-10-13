@@ -1,0 +1,23 @@
+version: '3'
+
+tasks:
+  format-apply:
+    desc: 'Fix java code format'
+    cmds:
+      - ./mvnw spotless:apply
+  format-check:
+    desc: 'Check java code format'
+    cmds:
+      - ./mvnw spotless:check
+  docker-compose-up-development:
+    desc: 'Start docker compose up for development'
+    cmds:
+      - docker compose --profile development up
+  docker-compose-down-development:
+    desc: 'Stop docker compose up for development'
+    cmds:
+      - docker compose --profile development down
+  docker-build-prod:
+    desc: 'Build production image'
+    cmds:
+      - docker build --target prod -t booking-api:latest .
