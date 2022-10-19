@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Head from 'next/head'
 import styles from '../styles/EverNote.module.scss'
-import NoteOperations from './components/NodeOperations'
+import NoteOperations from './components/NoteOperations'
 import NoteDetails from './components/NoteDetails'
 
 export default function Home() {
