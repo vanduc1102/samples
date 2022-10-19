@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
-import { Button, Card, Input } from 'antd'
+import { Button, Card, Input, message, Divider, Typography } from 'antd'
 
 import { doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore'
 
@@ -29,7 +29,7 @@ export default function NoteDetails({ noteId }) {
             noteDesc: singleNote.noteDesc,
         })
             .then(() => {
-                console.log('Updated note: ', singleNote)
+                message.info('Updated note: ' + id)
             })
             .finally(() => {
                 setLoading(false)
@@ -40,7 +40,7 @@ export default function NoteDetails({ noteId }) {
         const docId = doc(database, 'notes', id)
         deleteDoc(docId).then(() => {
             resetFields()
-            console.log('Deleted note: ' + id)
+            message.info('Deleted note: ' + id)
             window.location.reload()
         })
     }
@@ -79,7 +79,17 @@ export default function NoteDetails({ noteId }) {
             )}
 
             {isEdit && (
-                <div>
+                <Card
+                    actions={[
+                        <Button
+                            type="primary"
+                            onClick={() => editNote(singleNote.id)}
+                            loading={loading}
+                        >
+                            Update Note
+                        </Button>,
+                    ]}
+                >
                     <Input
                         placeholder="Enter the Title.."
                         onChange={(e) =>
@@ -90,36 +100,36 @@ export default function NoteDetails({ noteId }) {
                         }
                         value={singleNote.noteTitle}
                     />
-                    <div>
-                        <ReactQuill
-                            value={singleNote.noteDesc}
-                            onChange={(value) =>
-                                setSingleNote({
-                                    ...singleNote,
-                                    noteDesc: value,
-                                })
-                            }
-                        />
-                    </div>
-                    <Button
-                        type="primary"
-                        onClick={() => editNote(singleNote.id)}
-                        loading={loading}
-                    >
-                        Update Note
-                    </Button>
-                </div>
+                    <Divider />
+                    <ReactQuill
+                        value={singleNote.noteDesc}
+                        onChange={(value) =>
+                            setSingleNote({
+                                ...singleNote,
+                                noteDesc: value,
+                            })
+                        }
+                    />
+                </Card>
             )}
 
-            <Card
-                size="small"
-                title={singleNote.noteTitle}
-                style={{ width: 300 }}
-            >
-                <div
-                    dangerouslySetInnerHTML={{ __html: singleNote.noteDesc }}
-                ></div>
-            </Card>
+            {noteId && (
+                <Card
+                    size="small"
+                    title={
+                        <Typography.Title>
+                            {singleNote.noteTitle}
+                        </Typography.Title>
+                    }
+                    style={{ width: 300, margin: '1rem' }}
+                >
+                    <div
+                        dangerouslySetInnerHTML={{
+                            __html: singleNote.noteDesc,
+                        }}
+                    ></div>
+                </Card>
+            )}
         </>
     )
 }

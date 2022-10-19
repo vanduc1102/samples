@@ -1,20 +1,15 @@
-$dark-red: rgb(119, 27, 27);
-$black: black;
-$whiteSmoke: whiteSmoke;
-
-$dark-red: rgb(119, 27, 27);
-$black: black;
-$whiteSmoke: whiteSmoke;
-$gray: gray;
-
 .container {
     display: flex;
+    flex-direction: row;
+    width: 100%;
 }
 
 .left {
-    width: 20rem;
+    width: 30%;
+    padding: 1rem;
 }
 
-.ReactQuill {
-    width: 15rem;
+.right {
+    width: 70%;
+    padding: 1rem;
 }
