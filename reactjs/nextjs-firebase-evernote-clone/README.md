@@ -12,6 +12,6 @@ yarn dev
 
 ## Tasks
 
--   [ ] Learn about firebase google analytic SSR
--   [ ] Learn Font, why it doesn't work
+-   [x] Learn about firebase google analytic SSR
+-   [x] Learn Font, why it doesn't work
 -   [ ] Apply AntD , current UI looks so bad
