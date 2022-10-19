@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
+import { Button, List, Typography, Input } from 'antd'
 import { collection, addDoc, getDocs } from 'firebase/firestore'
-import { database } from '../firebaseConfig'
-import styles from '../../styles/EverNote.module.scss'
-import 'react-quill/dist/quill.snow.css'
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
+import { database } from '../../firebaseConfig'
 
+import styles from './index.module.scss'
+import 'react-quill/dist/quill.snow.css'
+
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 const dbInstance = collection(database, 'notes')
 
 export default function NoteOperations({ getSelectedNote }) {
@@ -53,52 +55,52 @@ export default function NoteOperations({ getSelectedNote }) {
     }
 
     return (
-        <>
+        <div className={styles.Container}>
             <div className={styles.btnContainer}>
-                <button className={styles.button} onClick={inputToggle}>
+                <Button type="primary" onClick={inputToggle}>
                     Add a new button
-                </button>
+                </Button>
             </div>
             {isInputVisible && (
                 <>
-                    <div className={styles.inputContainer}>
-                        <input
+                    <div>
+                        <Input
                             placeholder="Enter the Title.."
-                            className={styles.input}
                             value={noteTitle}
                             onChange={(event) =>
                                 setNoteTitle(event.target.value)
                             }
                         />
                     </div>
-                    <div className={styles.ReactQuill}>
+                    <div>
                         <ReactQuill onChange={setNoteDesc} value={noteDesc} />
                     </div>
                     <div>
-                        <button
-                            className={styles.saveBtn}
+                        <Button
+                            type="primary"
                             onClick={saveNote}
-                            disabled={loading}
+                            loading={loading}
                         >
                             Save Note
-                        </button>
+                        </Button>
                     </div>
                 </>
             )}
 
-            <div className={styles.notesDisplay}>
-                {notes.map((note) => {
-                    return (
-                        <div
-                            key={note.id}
-                            className={styles.notesInner}
-                            onClick={() => getSelectedNote(note.id)}
+            <div>
+                <List
+                    bordered
+                    dataSource={notes}
+                    renderItem={(item) => (
+                        <List.Item
+                            onClick={() => getSelectedNote(item.id)}
+                            key={item.id}
                         >
-                            <h4>{note.noteTitle}</h4>
-                        </div>
-                    )
-                })}
+                            <Typography.Text>{item.noteTitle}</Typography.Text>
+                        </List.Item>
+                    )}
+                />
             </div>
-        </>
+        </div>
     )
 }

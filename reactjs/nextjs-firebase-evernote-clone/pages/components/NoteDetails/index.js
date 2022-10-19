@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
+import { Button, Card, Input } from 'antd'
+
 import { doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore'
 
-import { database } from '../firebaseConfig'
+import { database } from '../../firebaseConfig'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
-import styles from '../../styles/EverNote.module.scss'
+import styles from './index.module.scss'
 import 'react-quill/dist/quill.snow.css'
 
 const DEFAULT_NOTE = {
@@ -17,14 +19,21 @@ const DEFAULT_NOTE = {
 export default function NoteDetails({ noteId }) {
     const [singleNote, setSingleNote] = useState({ ...DEFAULT_NOTE })
     const [isEdit, setIsEdit] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     const editNote = async (id) => {
+        setLoading(true)
         const docId = doc(database, 'notes', id)
-        await updateDoc(docId, {
+        updateDoc(docId, {
             noteTitle: singleNote.noteTitle,
             noteDesc: singleNote.noteDesc,
         })
-        console.log('Updated note: ', singleNote)
+            .then(() => {
+                console.log('Updated note: ', singleNote)
+            })
+            .finally(() => {
+                setLoading(false)
+            })
     }
 
     const deleteNote = (id) => {
@@ -55,26 +64,23 @@ export default function NoteDetails({ noteId }) {
     return (
         <>
             {noteId && (
-                <div>
-                    <button
-                        className={styles.editBtn}
-                        onClick={() => setIsEdit(true)}
-                    >
+                <div className={styles.buttonContainer}>
+                    <Button type="primary" onClick={() => setIsEdit(true)}>
                         Edit
-                    </button>
-                    <button
-                        className={styles.deleteBtn}
+                    </Button>
+                    <Button
+                        type="primary"
+                        danger={true}
                         onClick={() => deleteNote(singleNote.id)}
                     >
                         Delete
-                    </button>
+                    </Button>
                 </div>
             )}
 
             {isEdit && (
-                <div className={styles.inputContainer}>
-                    <input
-                        className={styles.input}
+                <div>
+                    <Input
                         placeholder="Enter the Title.."
                         onChange={(e) =>
                             setSingleNote({
@@ -84,7 +90,7 @@ export default function NoteDetails({ noteId }) {
                         }
                         value={singleNote.noteTitle}
                     />
-                    <div className={styles.ReactQuill}>
+                    <div>
                         <ReactQuill
                             value={singleNote.noteDesc}
                             onChange={(value) =>
@@ -95,19 +101,25 @@ export default function NoteDetails({ noteId }) {
                             }
                         />
                     </div>
-                    <button
+                    <Button
+                        type="primary"
                         onClick={() => editNote(singleNote.id)}
-                        className={styles.saveBtn}
+                        loading={loading}
                     >
                         Update Note
-                    </button>
+                    </Button>
                 </div>
             )}
 
-            <h2>{singleNote.noteTitle}</h2>
-            <div
-                dangerouslySetInnerHTML={{ __html: singleNote.noteDesc }}
-            ></div>
+            <Card
+                size="small"
+                title={singleNote.noteTitle}
+                style={{ width: 300 }}
+            >
+                <div
+                    dangerouslySetInnerHTML={{ __html: singleNote.noteDesc }}
+                ></div>
+            </Card>
         </>
     )
 }

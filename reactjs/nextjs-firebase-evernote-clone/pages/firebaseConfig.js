@@ -20,7 +20,7 @@ const firebaseConfig = {
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig)
 if (typeof window !== 'undefined' && firebaseConfig.projectId) {
-    const analytics = getAnalytics(app);
+    const analytics = getAnalytics(app)
 }
 
 export const database = getFirestore(app)
