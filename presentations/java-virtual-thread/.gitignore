@@ -1,3 +1,5 @@
+local-*
+*.0x
 processed.txt
 # Logs
 logs
