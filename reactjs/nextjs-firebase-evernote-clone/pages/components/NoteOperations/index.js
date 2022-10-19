@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
-import { Button, List, Typography, Input } from 'antd'
+import { Button, List, Typography, Input, Divider } from 'antd'
 import { collection, addDoc, getDocs } from 'firebase/firestore'
 import { database } from '../../firebaseConfig'
 
@@ -15,6 +15,7 @@ export default function NoteOperations({ getSelectedNote }) {
     const [noteTitle, setNoteTitle] = useState('')
     const [noteDesc, setNoteDesc] = useState('')
     const [loading, setLoading] = useState(false)
+    const [loadingNotes, setLoadingNotes] = useState(false)
     const [notes, setNotes] = useState([])
 
     const inputToggle = () => {
@@ -35,6 +36,7 @@ export default function NoteOperations({ getSelectedNote }) {
                 setNoteTitle('')
                 setNoteDesc('')
                 getNotes()
+                message.info('Added new note')
             })
             .catch((err) => {
                 console.log(err)
@@ -49,20 +51,28 @@ export default function NoteOperations({ getSelectedNote }) {
     }, [])
 
     const getNotes = () => {
-        getDocs(dbInstance).then((data) => {
-            setNotes(data.docs.map((item) => ({ ...item.data(), id: item.id })))
-        })
+        setLoadingNotes(true)
+        getDocs(dbInstance)
+            .then((data) => {
+                setNotes(
+                    data.docs.map((item) => ({ ...item.data(), id: item.id })),
+                )
+            })
+            .finally(() => {
+                setLoadingNotes(false)
+            })
     }
 
     return (
         <div className={styles.Container}>
             <div className={styles.btnContainer}>
-                <Button type="primary" onClick={inputToggle}>
+                <Button type="primary" onClick={inputToggle} disabled={loading}>
                     Add a new button
                 </Button>
             </div>
+
             {isInputVisible && (
-                <>
+                <div className={styles.noteFormContainer}>
                     <div>
                         <Input
                             placeholder="Enter the Title.."
@@ -72,9 +82,11 @@ export default function NoteOperations({ getSelectedNote }) {
                             }
                         />
                     </div>
+                    <Divider />
                     <div>
                         <ReactQuill onChange={setNoteDesc} value={noteDesc} />
                     </div>
+                    <Divider />
                     <div>
                         <Button
                             type="primary"
@@ -84,13 +96,13 @@ export default function NoteOperations({ getSelectedNote }) {
                             Save Note
                         </Button>
                     </div>
-                </>
+                </div>
             )}
-
             <div>
                 <List
                     bordered
                     dataSource={notes}
+                    loading={loadingNotes}
                     renderItem={(item) => (
                         <List.Item
                             onClick={() => getSelectedNote(item.id)}
