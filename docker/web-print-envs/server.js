@@ -31,8 +31,19 @@ app.get('/envs', (req, res) => {
   res.json({data: process.env});
 });
 
+app.get('/exit-with-error', (req, res) => {
+  process.exit(1);
+});
+
+app.get('/throw-error', (req, res) => {
+  throw new Error('new error');
+});
+
 app.get('/', (req, res) => {
-  res.json({data: 'Hello world!'});
+  res.json({
+    data: 'Hello world!',
+    path: req.path,
+  });
 });
 
 app.listen(PORT, HOST, () => {

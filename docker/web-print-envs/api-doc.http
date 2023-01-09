@@ -1,0 +1,13 @@
+
+### Health
+GET http://localhost:8080/health
+
+### Throw Error
+GET http://localhost:8080/throw-error
+
+### Exit with Error
+GET http://localhost:8080/exit-with-error
+
+### Print envs
+GET http://localhost:8080/envs
+
