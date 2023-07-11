@@ -202,3 +202,4 @@ classes/
 **/*.jar
 **/*.zip
 **/*.class
+go-lang/**/*/tmp/*
