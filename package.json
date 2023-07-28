@@ -1,0 +1,23 @@
+{
+  "name": "samples",
+  "version": "1.0.0",
+  "description": "All kind of samples code.",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "npx mookme init"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vanduc1102/samples.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vanduc1102/samples/issues"
+  },
+  "homepage": "https://github.com/vanduc1102/samples#readme",
+  "devDependencies": {
+    "@escape.tech/mookme": "^2.4.0"
+  }
+}

@@ -198,7 +198,6 @@ dist
 
 classes/
 .idea
-.vscode
 **/*.jar
 **/*.zip
 **/*.class
