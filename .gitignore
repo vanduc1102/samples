@@ -202,3 +202,5 @@ classes/
 **/*.zip
 **/*.class
 go-lang/**/*/tmp/*
+
+**/*/.env.local

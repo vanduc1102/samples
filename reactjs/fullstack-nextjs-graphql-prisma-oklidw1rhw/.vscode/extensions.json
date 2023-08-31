@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "streetsidesoftware.code-spell-checker",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "EditorConfig.EditorConfig",
+    "GraphQL.vscode-graphql-syntax",
+    "bradlc.vscode-tailwindcss",
+    "Prisma.prisma"
+  ]
+}
