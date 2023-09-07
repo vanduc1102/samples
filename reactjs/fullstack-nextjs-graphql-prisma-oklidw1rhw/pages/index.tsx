@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Inter } from "next/font/google";
 import { gql, useQuery } from "@apollo/client";
 import { Link } from "@prisma/client";
@@ -44,12 +43,18 @@ export default function Home() {
         <ul className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
           {data.links.edges.map(({ node: link }: { node: Link }) => (
             <li key={link.id} className="max-w-md  rounded  shadow">
-              <img className="shadow-sm" src={link.imageUrl} />
+              <picture>
+                <img alt="shadow" className="shadow-sm" src={link.imageUrl} />
+              </picture>
               <div className="flex flex-col space-y-2 p-5">
                 <p className="text-sm text-blue-500">{link.category}</p>
                 <p className="text-lg font-medium">{link.title}</p>
                 <p className="text-gray-600">{link.description}</p>
-                <a href={link.url} className="flex hover:text-blue-500" target="_blank">
+                <a
+                  href={link.url}
+                  className="flex hover:text-blue-500"
+                  target="_blank"
+                >
                   {link?.url?.replace(/(^\w+:|^)\/\//, "")}
                   <svg
                     className="my-1 h-4 w-4"
@@ -85,7 +90,7 @@ export default function Home() {
           </button>
         ) : (
           <p className="my-10 text-center font-medium">
-            You've reached the end!{" "}
+            You&apos;ve reached the end!
           </p>
         )}
       </div>

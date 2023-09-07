@@ -4,7 +4,7 @@ import {
   handleCallback,
 } from "@auth0/nextjs-auth0";
 import { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "../../../lib/prisma";
+import { prisma } from "@/backend/lib/prisma";
 
 export default handleAuth({
   async callback(req: NextApiRequest, res: NextApiResponse) {
@@ -15,6 +15,7 @@ export default handleAuth({
     }
   },
 });
+//
 
 async function afterCallback(
   req: NextApiRequest,

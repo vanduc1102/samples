@@ -1,7 +1,7 @@
 import {  createYoga } from "graphql-yoga";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { schema } from "../../graphql/schema";
-import { createContext } from "../../graphql/context";
+import { schema } from "@/backend/graphql/schema";
+import { createContext } from "@/backend/graphql/context";
 
 export default createYoga<{
   req: NextApiRequest;
@@ -9,7 +9,7 @@ export default createYoga<{
 }>({
   schema: schema,
   context: createContext,
-  graphqlEndpoint: "/api/graphql",
+  graphqlEndpoint: "/api/graphql"
 });
 
 export const config = {

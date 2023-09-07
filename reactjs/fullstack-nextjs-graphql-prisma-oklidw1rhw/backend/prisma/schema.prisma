@@ -1,0 +1,192 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+generator pothos {
+    provider = "prisma-pothos-types"
+}
+
+generator pothosCrud {
+    provider            = "prisma-generator-pothos-codegen"
+    generatorConfigPath = "./pothos.config.js"
+    // You may also set the `generatorConfigPath` via the `POTHOS_CRUD_CONFIG_PATH` environment variable.
+    // The environment variable will override the path hardcoded here.
+}
+
+model User {
+    /// @Pothos.omit(create, update)
+    id        Int      @id @default(autoincrement())
+    /// @Pothos.omit()
+    createdAt DateTime @default(now())
+    /// @Pothos.omit()
+    updatedAt DateTime @updatedAt
+
+    email String? @unique
+    image String?
+
+    role   Role @relation(fields: [roleId], references: [id])
+    roleId Int
+
+    bookmarks Link[]
+    remarks   Remarks[]
+}
+
+model Role {
+    /// @Pothos.omit(create, update)
+    id        Int      @id @default(autoincrement())
+    /// @Pothos.omit()
+    createdAt DateTime @default(now())
+    /// @Pothos.omit()
+    updatedAt DateTime @updatedAt
+
+    name String
+    code String @unique
+
+    users User[]
+}
+
+model Link {
+    /// @Pothos.omit(create, update)
+    id        Int      @id @default(autoincrement())
+    /// @Pothos.omit()
+    createdAt DateTime @default(now())
+    /// @Pothos.omit()
+    updatedAt DateTime @updatedAt
+
+    title       String
+    description String
+    url         String
+    imageUrl    String
+    category    String
+
+    users User[]
+}
+
+model Remarks {
+    /// @Pothos.omit(create, update)
+    id        Int      @id @default(autoincrement())
+    /// @Pothos.omit()
+    createdAt DateTime @default(now())
+    /// @Pothos.omit()
+    updatedAt DateTime @updatedAt
+
+    content String  @unique
+    trashed Boolean @default(false)
+
+    user   User @relation(fields: [userId], references: [id])
+    userId Int
+}
+
+model MarginModel {
+    /// @Pothos.omit(create, update)
+    id        Int      @id @default(autoincrement())
+    /// @Pothos.omit()
+    createdAt DateTime @default(now())
+    /// @Pothos.omit()
+    updatedAt DateTime @updatedAt
+
+    productCode       String  @unique
+    isActive          Boolean @default(false)
+    productType       String?
+    productNameLabel  String?
+    productNameValue  String  @unique
+    remarksLabel      String?
+    remarksValue      String?
+    priceLevel1Label  String?
+    priceLevel1Value  Float?
+    priceLevel2Label  String?
+    priceLevel2Value  Float?
+    priceLevel3Label  String?
+    priceLevel3Value  Float?
+    priceLevel4Label  String?
+    priceLevel4Value  Float?
+    priceLevel5Label  String?
+    priceLevel5Value  Float?
+    priceLevel6Label  String?
+    priceLevel6Value  Float?
+    priceLevel7Label  String?
+    priceLevel7Value  Float?
+    priceLevel8Label  String?
+    priceLevel8Value  Float?
+    priceLevel9Label  String?
+    priceLevel9Value  Float?
+    priceLevel10Label String?
+    priceLevel10Value Float?
+    priceLevel11Label String?
+    priceLevel11Value Float?
+
+    hardware Hardware[]
+}
+
+model Hardware {
+    /// @Pothos.omit(create, update)
+    id        Int      @id @default(autoincrement())
+    /// @Pothos.omit()
+    createdAt DateTime @default(now())
+    /// @Pothos.omit()
+    updatedAt DateTime @updatedAt
+
+    productCode                   String  @unique
+    isActive                      Boolean @default(false)
+    productType                   String?
+    productNameLabel              String?
+    productNameValue              String?
+    productShortDescriptionLabel  String?
+    productShortDescriptionValue  String?
+    remarksLabel                  String?
+    remarksValue                  String?
+    manufacturerLabel             String?
+    manufacturerValue             String?
+    manufPartsNumberLabel         String?
+    manufPartsNumberValue         String?
+    speedcastPartsNumberLabel     String?
+    speedcastPartsNumberValue     String?
+    standardWarrantyLabel         String?
+    standardWarrantyValue         String?
+    delivryLeadTimeLabel          String?
+    delivryLeadTimeValue          String?
+    iNCOTERMLabel                 String?
+    iNCOTERMValue                 String?
+    costValue                     Float?
+    leaseToOwnMarginModel         String?
+    leaseToOperateMarginModel     String?
+    sellRoundup                   Float?
+    leaseToOwnRoundup             Float?
+    leaseToOperateRoundup         Float?
+    pickUpLocationValue           String?
+    packageWeightLabel            String?
+    packageWeightValue            Float?
+    packageWeightUnit             String?
+    packageLengthLabel            String?
+    packageLengthValue            Float?
+    packageLengthUnit             String?
+    packageWidthLabel             String?
+    packageWidthValue             Float?
+    packageWidthUnit              String?
+    packageHeightLabel            String?
+    packageHeightValue            Float?
+    packageHeightUnit             String?
+    sellAllowed                   Boolean @default(false)
+    leaseToOwn1_5MthAllowed       Boolean @default(false)
+    leaseToOwn6_11MthAllowed      Boolean @default(false)
+    leaseToOwn12_23MthAllowed     Boolean @default(false)
+    leaseToOwn24_35MthAllowed     Boolean @default(false)
+    leaseToOwn36_47MthAllowed     Boolean @default(false)
+    leaseToOwn48_59MthAllowed     Boolean @default(false)
+    leaseToOwn60MthAllowed        Boolean @default(false)
+    leaseToOperate1_5MthAllowed   Boolean @default(false)
+    leaseToOperate6_11MthAllowed  Boolean @default(false)
+    leaseToOperate12_23MthAllowed Boolean @default(false)
+    leaseToOperate24_35MthAllowed Boolean @default(false)
+    leaseToOperate36_47MthAllowed Boolean @default(false)
+    leaseToOperate48_59MthAllowed Boolean @default(false)
+    leaseToOperate60MthAllowed    Boolean @default(false)
+
+    sellMarginModel     MarginModel @relation(fields: [sellMarginModelName], references: [productNameValue])
+    sellMarginModelName String
+}

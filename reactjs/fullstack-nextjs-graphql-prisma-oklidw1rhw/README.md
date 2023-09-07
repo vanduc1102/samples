@@ -30,3 +30,12 @@ Creating new migration
 ```sh
 yarn prisma migrate dev --name new_migration
 ```
+Generate client
+
+```sh
+yarn prisma generate
+```
+
+## GraphQL
+
+http://localhost:3000/api/graphql
