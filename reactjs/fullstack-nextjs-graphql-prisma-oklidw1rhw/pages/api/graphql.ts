@@ -1,7 +1,8 @@
-import {  createYoga } from "graphql-yoga";
+import "reflect-metadata";
+import { createYoga } from "graphql-yoga";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { schema } from "@/backend/graphql/schema";
 import { createContext } from "@/backend/graphql/context";
+import schema from "../../backend/graphql/schema";
 
 export default createYoga<{
   req: NextApiRequest;
@@ -9,7 +10,7 @@ export default createYoga<{
 }>({
   schema: schema,
   context: createContext,
-  graphqlEndpoint: "/api/graphql"
+  graphqlEndpoint: "/api/graphql",
 });
 
 export const config = {

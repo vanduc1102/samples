@@ -1,11 +1,9 @@
-// import "./types/Role";
-// import "./types/User";
-// import "./types/Link";
+import { buildSchema } from "type-graphql";
+import { resolvers } from "./__generated__/type-graphql";
 
-import { generateAllCrud } from "./__generated__/autocrud";
-import { builder } from "./builder";
+const schema = await buildSchema({
+  resolvers,
+  validate: false,
+});
 
-generateAllCrud()
-
-
-export const schema = builder.toSchema();
+export default schema;

@@ -1,39 +1,33 @@
 import { Inter } from "next/font/google";
 import { gql, useQuery } from "@apollo/client";
 import { Link } from "@prisma/client";
+import { GetServerSideProps } from "next";
+import { getSession } from "@auth0/nextjs-auth0";
 
 const inter = Inter({ subsets: ["latin"] });
 const AllLinksQuery = gql`
-  query allLinksQuery($first: Int, $after: ID) {
-    links(first: $first, after: $after) {
-      pageInfo {
-        endCursor
-        hasNextPage
-      }
-      edges {
-        cursor
-        node {
-          imageUrl
-          url
-          title
-          category
-          description
-          id
-        }
-      }
+  query allLinksQuery($take: Int, $skip: Int) {
+    links(take: $take, skip: $skip) {
+      category
+      createdAt
+      description
+      id
+      imageUrl
+      title
+      updatedAt
+      url
     }
   }
 `;
 
-export default function Home() {
+const ITEMS_PER_PAGE = 20;
+export default function HomePage() {
   const { data, loading, error, fetchMore } = useQuery(AllLinksQuery, {
-    variables: { first: 2 },
+    variables: { take: ITEMS_PER_PAGE, skip: 0 },
   });
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Oh no... {error.message}</p>;
-
-  const { endCursor, hasNextPage } = data.links.pageInfo;
 
   return (
     <main
@@ -41,7 +35,7 @@ export default function Home() {
     >
       <div className="container mx-auto my-20 max-w-5xl">
         <ul className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {data.links.edges.map(({ node: link }: { node: Link }) => (
+          {data.links.map((link: Link) => (
             <li key={link.id} className="max-w-md  rounded  shadow">
               <picture>
                 <img alt="shadow" className="shadow-sm" src={link.imageUrl} />
@@ -70,30 +64,42 @@ export default function Home() {
             </li>
           ))}
         </ul>
-        {hasNextPage ? (
-          <button
-            className="my-10 rounded bg-blue-500 px-4 py-2 text-white"
-            onClick={() => {
-              fetchMore({
-                variables: { after: endCursor },
-                updateQuery: (prevResult, { fetchMoreResult }) => {
-                  fetchMoreResult.links.edges = [
-                    ...prevResult.links.edges,
-                    ...fetchMoreResult.links.edges,
-                  ];
-                  return fetchMoreResult;
-                },
-              });
-            }}
-          >
-            more
-          </button>
-        ) : (
-          <p className="my-10 text-center font-medium">
-            You&apos;ve reached the end!
-          </p>
-        )}
+        <button
+          className="my-10 rounded bg-blue-500 px-4 py-2 text-white"
+          onClick={() => {
+            fetchMore({
+              variables: { skip: ITEMS_PER_PAGE },
+              updateQuery: (prevResult, { fetchMoreResult }) => {
+                fetchMoreResult.links = [
+                  ...prevResult.links,
+                  ...fetchMoreResult.links,
+                ];
+                return fetchMoreResult;
+              },
+            });
+          }}
+        >
+          more
+        </button>
       </div>
     </main>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const session = await getSession(req, res);
+
+  if (!session) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/api/auth/login",
+      },
+      props: {},
+    };
+  }
+
+  return {
+    props: {},
+  };
+};

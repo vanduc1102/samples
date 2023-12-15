@@ -7,23 +7,15 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-generator pothos {
-    provider = "prisma-pothos-types"
-}
-
-generator pothosCrud {
-    provider            = "prisma-generator-pothos-codegen"
-    generatorConfigPath = "./pothos.config.js"
-    // You may also set the `generatorConfigPath` via the `POTHOS_CRUD_CONFIG_PATH` environment variable.
-    // The environment variable will override the path hardcoded here.
+generator typegraphql {
+    provider = "typegraphql-prisma"
+    output   = "../graphql/__generated__/type-graphql"
+    formatGeneratedCode = false
 }
 
 model User {
-    /// @Pothos.omit(create, update)
     id        Int      @id @default(autoincrement())
-    /// @Pothos.omit()
     createdAt DateTime @default(now())
-    /// @Pothos.omit()
     updatedAt DateTime @updatedAt
 
     email String? @unique
@@ -37,11 +29,8 @@ model User {
 }
 
 model Role {
-    /// @Pothos.omit(create, update)
     id        Int      @id @default(autoincrement())
-    /// @Pothos.omit()
     createdAt DateTime @default(now())
-    /// @Pothos.omit()
     updatedAt DateTime @updatedAt
 
     name String
@@ -51,11 +40,8 @@ model Role {
 }
 
 model Link {
-    /// @Pothos.omit(create, update)
     id        Int      @id @default(autoincrement())
-    /// @Pothos.omit()
     createdAt DateTime @default(now())
-    /// @Pothos.omit()
     updatedAt DateTime @updatedAt
 
     title       String
@@ -68,11 +54,8 @@ model Link {
 }
 
 model Remarks {
-    /// @Pothos.omit(create, update)
     id        Int      @id @default(autoincrement())
-    /// @Pothos.omit()
     createdAt DateTime @default(now())
-    /// @Pothos.omit()
     updatedAt DateTime @updatedAt
 
     content String  @unique
@@ -83,11 +66,8 @@ model Remarks {
 }
 
 model MarginModel {
-    /// @Pothos.omit(create, update)
     id        Int      @id @default(autoincrement())
-    /// @Pothos.omit()
     createdAt DateTime @default(now())
-    /// @Pothos.omit()
     updatedAt DateTime @updatedAt
 
     productCode       String  @unique
@@ -124,11 +104,8 @@ model MarginModel {
 }
 
 model Hardware {
-    /// @Pothos.omit(create, update)
     id        Int      @id @default(autoincrement())
-    /// @Pothos.omit()
     createdAt DateTime @default(now())
-    /// @Pothos.omit()
     updatedAt DateTime @updatedAt
 
     productCode                   String  @unique
