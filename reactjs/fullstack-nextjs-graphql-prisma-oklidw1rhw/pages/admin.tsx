@@ -4,7 +4,7 @@ import { gql, useMutation } from "@apollo/client";
 import toast, { Toaster } from "react-hot-toast";
 import { getSession } from "@auth0/nextjs-auth0";
 import type { GetServerSideProps } from "next";
-import { prisma } from "../lib/prisma";
+import { prisma } from "@/backend/lib/prisma";
 
 type FormValues = {
   title: string;
@@ -181,7 +181,7 @@ const LoadingIcon = () => (
 );
 
 export default Admin;
-// pages/admin.tsx
+
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const session = await getSession(req, res);
 

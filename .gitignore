@@ -204,3 +204,4 @@ classes/
 go-lang/**/*/tmp/*
 
 **/*/.env.local
+**/*/__generated__/*
