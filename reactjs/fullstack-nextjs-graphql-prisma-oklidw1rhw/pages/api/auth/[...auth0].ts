@@ -2,9 +2,11 @@ import {
   Session,
   handleAuth,
   handleCallback,
+  handleLogin,
+  handleLogout,
 } from "@auth0/nextjs-auth0";
 import { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "@/backend/lib/prisma";
+// import { prisma } from "@/backend/lib/prisma";
 
 export default handleAuth({
   async callback(req: NextApiRequest, res: NextApiResponse) {
@@ -13,6 +15,16 @@ export default handleAuth({
     } catch (error: any) {
       res.status(error.status || 500).end(error.message);
     }
+  },
+  async login(req: NextApiRequest, res: NextApiResponse) {
+    await handleLogin(req, res, {
+      returnTo: "/dashboard",
+    });
+  },
+  async logout(req: NextApiRequest, res: NextApiResponse) {
+    await handleLogout(req, res, {
+      returnTo: "/login",
+    });
   },
 });
 //

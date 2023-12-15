@@ -1,5 +1,5 @@
 import { getExcelRows } from "../../../import-excels";
-import { prisma } from "../../../lib/prisma";
+import prisma  from "../../../lib/prisma";
 
 export async function seedMarginModel() {
   try {

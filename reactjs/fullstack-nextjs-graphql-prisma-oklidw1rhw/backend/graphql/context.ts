@@ -1,5 +1,6 @@
 import {  getSession } from '@auth0/nextjs-auth0'
 import type { NextApiRequest, NextApiResponse } from 'next'
+import prisma from '@/backend/lib/prisma'
 
 export async function createContext({ req, res }: { req: NextApiRequest, res: NextApiResponse }) {
   const session = await getSession(req, res)
@@ -12,5 +13,6 @@ export async function createContext({ req, res }: { req: NextApiRequest, res: Ne
   return {
     user,
     accessToken,
+    prisma
   }
 }

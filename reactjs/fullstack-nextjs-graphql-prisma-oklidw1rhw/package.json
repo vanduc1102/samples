@@ -9,7 +9,8 @@
     "lint": "next lint",
     "format": "prettier --write .",
     "type:check": "tsc --skipLibCheck ",
-    "read": "ts-node backend/import-excels/index.ts"
+    "read": "ts-node backend/import-excels/index.ts",
+    "codegen":"yarn prisma generate"
   },
   "prisma": {
     "schema": "backend/prisma/schema.prisma",
@@ -18,25 +19,31 @@
   "dependencies": {
     "@apollo/client": "^3.8.1",
     "@auth0/nextjs-auth0": "^3.1.0",
-    "@pothos/core": "^3.33.1",
-    "@pothos/plugin-prisma": "^3.59.0",
+    "@emotion/cache": "^11.11.0",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.14.8",
+    "@mui/material": "^5.14.8",
     "@prisma/client": "^5.2.0",
     "aws-sdk": "^2.1448.0",
-    "graphql": "^16.8.0",
+    "class-validator": "^0.14.0",
+    "graphql": "^15.3.0",
+    "graphql-fields": "^2.0.3",
+    "graphql-scalars": "^1.22.2",
     "graphql-yoga": "^4.0.4",
     "lodash": "^4.17.21",
     "next": "13.4.19",
     "node-xlsx": "^0.23.0",
-    "prisma-yup-generator": "^0.2.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.45.4",
     "react-hot-toast": "^2.4.1",
-    "react-iframe": "^1.8.5"
+    "react-iframe": "^1.8.5",
+    "reflect-metadata": "^0.1.13",
+    "type-graphql": "^1.1.1",
+    "typegraphql-prisma": "^0.27.0"
   },
   "devDependencies": {
-    "@tailwindcss/forms": "^0.5.5",
-    "@tailwindcss/typography": "^0.5.9",
     "@types/lodash": "^4.14.198",
     "@types/node": "20.5.7",
     "@types/react": "18.2.21",
@@ -46,10 +53,7 @@
     "eslint-config-next": "13.4.19",
     "postcss": "8.4.28",
     "prettier": "2.8.7",
-    "prettier-plugin-tailwindcss": "^0.4.1",
     "prisma": "^5.2.0",
-    "prisma-generator-pothos-codegen": "^0.6.1",
-    "tailwindcss": "3.3.3",
     "ts-node": "^10.9.1",
     "typescript": "5.2.2"
   }
