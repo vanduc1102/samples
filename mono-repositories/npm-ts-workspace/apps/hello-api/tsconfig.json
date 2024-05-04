@@ -1,0 +1,27 @@
+{
+  "extends":"../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "nodenext",
+    "target": "esnext",
+    "rootDir": ".",
+    "outDir": "./dist",
+    "strict": true,
+    "moduleResolution": "NodeNext",
+    "importHelpers": true,
+    "esModuleInterop": true,
+    "lib": ["esnext", "ESNext.AsyncIterable"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": false,
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "incremental": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules"]
+}

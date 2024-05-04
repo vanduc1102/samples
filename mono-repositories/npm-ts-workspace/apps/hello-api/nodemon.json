@@ -1,0 +1,7 @@
+{
+  "watch": ["src/**/*.ts"],
+  "ignore": [],
+  "exec": "ts-node --project ./tsconfig.json src/server.ts",
+  "ext": "js ts",
+  "delay": 2500
+}
