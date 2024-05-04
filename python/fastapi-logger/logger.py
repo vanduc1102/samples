@@ -1,12 +1,13 @@
 import os
 from dotenv import load_dotenv
 import watchtower
+
 import logging
+import logging.config
 
 import yaml
 
 load_dotenv()  # take environment variables from .env.
-
 
 with open("logging.yml") as log_config:
     config_yml = log_config.read()
