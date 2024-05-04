@@ -4,6 +4,7 @@ from typing import Union
 
 from fastapi import FastAPI
 from logger import logger
+import os
 
 load_dotenv()  # take environment variables from .env.
 
@@ -14,15 +15,17 @@ logger.error("This is an error!")
 
 app = FastAPI()
 
+
 @app.get("/")
 def read_root():
     logger.info(f"request / endpoint!")
-    return {"Hello": "World"}
+    return {"message": "Hello, World!", "appEnv": os.getenv("APP_ENV")}
 
 
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: Union[str, None] = None):
     logger.info(f"request / endpoint! %d", item_id)
     return {"item_id": item_id, "q": q}
+
 
 main = app
