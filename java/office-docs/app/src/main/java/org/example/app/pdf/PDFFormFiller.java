@@ -70,21 +70,10 @@ public class PDFFormFiller {
                     }
                 }
 
-                // Refresh form appearances
-                try {
-                    acroForm.refreshAppearances();
-                    System.out.println("Form appearances refreshed successfully");
-                } catch (Exception e) {
-                    System.out.println("Warning: Could not refresh appearances: " + e.getMessage());
-                }
-            } else {
-                System.out.println("No AcroForm found in the PDF document.");
+                acroForm.refreshAppearances();
             }
 
             document.save(outputFilePath);
-            System.out.println("PDF form filled successfully and saved to: " + outputFilePath);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
